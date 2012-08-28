@@ -6,6 +6,7 @@
 #include<FL/Fl_Slider.H>
 #include<FL/Fl_Chart.H>
 #include<FL/Fl_Multiline_Output.H>
+#include<FL/Fl_Choice.H>
 
 #include<cmath>
 
@@ -21,10 +22,12 @@ class Spring_Container : public Fl_Window
 		void valuechanged();
 		static void timeoutcall(void* data);
 		void timeout();
+		static void graphchanged(Fl_Widget* w,void* v);
+		void updategraphs();
+		int g;
 	private:
 		void initgraphs();
 		void updatetext();
-		void updategraphs();
 		Spring_Window* gl_box;
 		Fl_Slider* k_slider;
 		Fl_Slider* l_slider;
@@ -34,6 +37,8 @@ class Spring_Container : public Fl_Window
 
 		Fl_Slider* x_slider;
 		Fl_Slider* v_slider;
+
+		Fl_Choice* gmenu;
 
 		Line_Chart* c1;
 

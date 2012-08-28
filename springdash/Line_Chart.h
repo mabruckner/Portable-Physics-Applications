@@ -18,7 +18,6 @@ class Line_Chart : public Fl_Widget
 		double minrange;
 		double maxrange;
 		void draw_line_chart();
-		float tickunit;
 	protected:
 		vector<pair<double,double> > data;
 	public:

@@ -15,7 +15,6 @@ Line_Chart::Line_Chart(int x,int y,int w,int h,const char* label) : Fl_Widget(x,
 	boundrange=false;
 	minrange=0;
 	maxrange=0;
-	tickunit=1;
 }
 int Line_Chart::add(double x,double y)
 {
@@ -57,29 +56,39 @@ void Line_Chart::draw_line_chart()
 	cout<<mix<<endl<<max<<endl<<miy<<endl<<may<<endl;
 	fl_push_matrix();
 		fl_translate(x()+border,y()+border);
-		fl_color(88,88,88);
-		for(float y=tickunit*((int)miy/tickunit);y<may;y+=tickunit){
-			fl_begin_line();
-				fl_vertex(0,(y-may)*(-(h()-border*2)/(may-miy)));
-				fl_vertex(border,(y-may)*(-(h()-border*2)/(may-miy)));
-			fl_end_line();
-		}
+		fl_color(0xaa,0xaa,0xaa);
+		float tickunit=1;
 		fl_scale((w()-border*2)/(max-mix),-(h()-border*2)/(may-miy));
 		fl_translate(-mix,-may);
-		cout<<fl_transform_x(0,0)<<" , "<<fl_transform_y(0,0)<<endl;
-		fl_line_style(FL_SOLID|FL_CAP_ROUND|FL_JOIN_ROUND,2,NULL);
-		fl_begin_line();
-		if((int)data.size()%2==0&&false){
-			for(int i=0;i<(int)data.size()-2;i+=2){
-				fl_curve(data[i].first,data[i].second,data[i+1].first,data[i+1].second,data[i+2].first,data[i+2].second,data[i+3].first,data[i+3].second);
+		while(!((may-miy)/tickunit>=5&&(may-miy)/tickunit<10)){
+			if((may-miy)/tickunit<5){
+				tickunit/=2;
 			}
-		}else{
-				for(int i=0;i<(int)data.size();i++){
-					fl_vertex(data[i].first,data[i].second);
-				}
+			if((may-miy)/tickunit>=10){
+				tickunit*=2;
+			}
 		}
-		fl_end_line();
-		fl_line_style(FL_SOLID|FL_CAP_ROUND|FL_JOIN_ROUND,1,NULL);
+		for(float y=tickunit*((int)(miy/tickunit));y<=may;y+=tickunit){
+			fl_begin_line();
+				fl_vertex(mix,y);
+				fl_vertex(max,y);
+			fl_end_line();
+		}
+		while(!((max-mix)/tickunit>=5&&(max-mix)/tickunit<10)){
+			if((max-mix)/tickunit<5){
+				tickunit/=2;
+			}
+			if((max-mix)/tickunit>=10){
+				tickunit*=2;
+			}
+		}
+		for(float x=tickunit*((int)(mix/tickunit));x<=max;x+=tickunit){
+			fl_begin_line();
+				fl_vertex(x,miy);
+				fl_vertex(x,may);
+			fl_end_line();
+		}
+		fl_line_style(FL_SOLID|FL_CAP_ROUND|FL_JOIN_ROUND,2,NULL);
 		fl_color(FL_BLACK);
 		if(may>0&&miy<0){
 			fl_begin_line();
@@ -93,7 +102,21 @@ void Line_Chart::draw_line_chart()
 				fl_vertex(0,may);
 			fl_end_line();
 		}
-		
+		fl_color(color());
+		cout<<fl_transform_x(0,0)<<" , "<<fl_transform_y(0,0)<<endl;
+		fl_line_style(FL_SOLID|FL_CAP_ROUND|FL_JOIN_ROUND,2,NULL);
+		fl_begin_line();
+		if((int)data.size()%2==0&&false){
+			for(int i=0;i<(int)data.size()-2;i+=2){
+				fl_curve(data[i].first,data[i].second,data[i+1].first,data[i+1].second,data[i+2].first,data[i+2].second,data[i+3].first,data[i+3].second);
+			}
+		}else{
+				for(int i=0;i<(int)data.size();i++){
+					fl_vertex(data[i].first,data[i].second);
+				}
+		}
+		fl_end_line();
+		fl_line_style(0);
 	fl_pop_matrix();
 /*
 	fl_color(FL_BLACK);
@@ -112,7 +135,7 @@ void Line_Chart::draw()
     int yy = y()+Fl::box_dy(b);
     int ww = w()-Fl::box_dw(b);
     int hh = h()-Fl::box_dh(b);
-    //fl_push_clip(xx, yy, ww, hh);
+    fl_push_clip(xx, yy, ww, hh);
 	fl_color(FL_WHITE);
 	fl_rectf(x(),y(),w(),h());
 
@@ -125,5 +148,5 @@ void Line_Chart::draw()
 			break;
 	}
 	
-	//fl_pop_clip();
+	fl_pop_clip();
 }

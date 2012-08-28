@@ -13,28 +13,28 @@ Spring_Container::Spring_Container(int x,int y,int w,int h,const char* label=0) 
 {
 	gl_box=new Spring_Window(190,10,w-200,h-180,"GL");
 	resizable(gl_box);
-	k_slider=new Fl_Slider(10,10,20,h-140,"k");
+	k_slider=new Fl_Slider(10,10,20,h-170,"k");
 	k_slider->step(1);
 	k_slider->range(1,100);
 	k_slider->value(10);
-	l_slider=new Fl_Slider(40,10,20,h-140,"l");
+	l_slider=new Fl_Slider(40,10,20,h-170,"l");
 	l_slider->step(.1);
 	l_slider->range(0,1);
 	l_slider->value(.1);
-	m_slider=new Fl_Slider(70,10,20,h-140,"m");
+	m_slider=new Fl_Slider(70,10,20,h-170,"m");
 	m_slider->step(.1);
 	m_slider->range(.1,10);
 	m_slider->value(1);
-	g_slider=new Fl_Slider(100,10,20,h-140,"g");
+	g_slider=new Fl_Slider(100,10,20,h-170,"g");
 	g_slider->step(.1);
 	g_slider->range(10,-10);
 	g_slider->value(-9.8);
 
-	x_slider=new Fl_Slider(130,10,20,h-140,"x0");
+	x_slider=new Fl_Slider(130,10,20,h-170,"x0");
 	x_slider->step(.5);
 	x_slider->range(-10,10);
 	x_slider->value(0);
-	v_slider=new Fl_Slider(160,10,20,h-140,"v0");
+	v_slider=new Fl_Slider(160,10,20,h-170,"v0");
 	v_slider->step(.5);
 	v_slider->range(-10,10);
 	v_slider->value(0);
@@ -60,10 +60,21 @@ Spring_Container::Spring_Container(int x,int y,int w,int h,const char* label=0) 
 	x_slider->callback(Spring_Container::call,(void*)this);
 	v_slider->callback(Spring_Container::call,(void*)this);
 
+	g=0;
 	c1=new Line_Chart(10,h-110,w-20,100,"CHART");
+	gmenu=new Fl_Choice(10,h-140,170,20,"");
+	gmenu->add("Displacement",0,Spring_Container::graphchanged,this,0);
+	gmenu->add("Velocity",0,Spring_Container::graphchanged,this,0);
+	gmenu->add("Acceleration",0,Spring_Container::graphchanged,this,0);
+	gmenu->add("Net Force",0,Spring_Container::graphchanged,this,0);
+	gmenu->add("Potential Energy",0,Spring_Container::graphchanged,this,0);
+	gmenu->add("Kinetic Energy",0,Spring_Container::graphchanged,this,0);
+	gmenu->add("Total Energy",0,Spring_Container::graphchanged,this,0);
+	gmenu->value(0);
 	c1->type(FL_LINE_CHART);
 	//c1->autosize(1);
-	c1->rangebounds(true,-5,5);
+	c1->rangebounds(true,-1,1);
+	c1->color(FL_BLUE);
 	valuechanged();
 	initgraphs();
 
@@ -120,9 +131,51 @@ void Spring_Container::initgraphs()
 }
 void Spring_Container::updategraphs()
 {
-	for(int i=0;i<500;i++){
-		c1->update(i,(double)i/50,calc.disp((float)i/50));
+	switch(gmenu->value()){
+		case 0:
+			c1->color(FL_BLUE);
+			for(int i=0;i<500;i++){
+				c1->update(i,(double)i/50,calc.disp((float)i/50));
+			}
+			break;
+		case 1:
+			c1->color(FL_GREEN);
+			for(int i=0;i<500;i++){
+				c1->update(i,(double)i/50,calc.vel((float)i/50));
+			}
+			break;
+		case 2:
+			c1->color(FL_RED);
+			for(int i=0;i<500;i++){
+				c1->update(i,(double)i/50,calc.acc((float)i/50));
+			}
+			break;
+		case 3:
+			c1->color(FL_YELLOW);
+			for(int i=0;i<500;i++){
+				c1->update(i,(double)i/50,calc.acc((float)i/50)/calc.m());
+			}
+			break;
+		case 4:
+			c1->color(FL_CYAN);
+			for(int i=0;i<500;i++){
+				c1->update(i,(double)i/50,calc.disp((float)i/50)*calc.g()*calc.m()+calc.disp((float)i/50)*calc.disp((float)i/50)*calc.k()/2);
+			}
+			break;
+		case 5:
+			c1->color(FL_MAGENTA);
+			for(int i=0;i<500;i++){
+				c1->update(i,(double)i/50,calc.vel((float)i/50)*calc.vel((float)i/50)*calc.m()/2);
+			}
+			break;
+		case 6:
+			c1->color(FL_BLUE);
+			for(int i=0;i<500;i++){
+				c1->update(i,(double)i/50,calc.disp((float)i/50)*calc.g()*calc.m()+calc.disp((float)i/50)*calc.disp((float)i/50)*calc.k()/2+calc.vel((float)i/50)*calc.vel((float)i/50)*calc.m()/2);
+			}
+			break;
 	}
+			
 	c1->redraw();
 }
 void Spring_Container::updatetext()
@@ -137,4 +190,8 @@ void Spring_Container::updatetext()
 	txt<<"\tx0="<<round(calc.x0());
 	txt<<"\tv0="<<round(calc.v0());
 	o_text->value(txt.str().data());
+}
+void Spring_Container::graphchanged(Fl_Widget* w,void* v)
+{
+	((Spring_Container*)v)->updategraphs();
 }
