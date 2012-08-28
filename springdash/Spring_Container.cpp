@@ -17,27 +17,33 @@ Spring_Container::Spring_Container(int x,int y,int w,int h,const char* label=0) 
 	k_slider->step(1);
 	k_slider->range(1,100);
 	k_slider->value(10);
+	k_slider->tooltip("spring constant");
 	l_slider=new Fl_Slider(40,10,20,h-170,"l");
 	l_slider->step(.1);
 	l_slider->range(0,1);
 	l_slider->value(.1);
+	l_slider->tooltip("damping constant");
 	m_slider=new Fl_Slider(70,10,20,h-170,"m");
 	m_slider->step(.1);
 	m_slider->range(.1,10);
 	m_slider->value(1);
+	m_slider->tooltip("mass");
 	g_slider=new Fl_Slider(100,10,20,h-170,"g");
 	g_slider->step(.1);
 	g_slider->range(10,-10);
 	g_slider->value(-9.8);
+	g_slider->tooltip("acceleration due to gravity");
 
 	x_slider=new Fl_Slider(130,10,20,h-170,"x0");
 	x_slider->step(.5);
 	x_slider->range(-10,10);
 	x_slider->value(0);
+	x_slider->tooltip("initial position");
 	v_slider=new Fl_Slider(160,10,20,h-170,"v0");
 	v_slider->step(.5);
 	v_slider->range(-10,10);
 	v_slider->value(0);
+	v_slider->tooltip("initial velocity");
 
 	k_slider->type(FL_VERT_NICE_SLIDER);
 	l_slider->type(FL_VERT_NICE_SLIDER);
@@ -159,7 +165,7 @@ void Spring_Container::updategraphs()
 		case 4:
 			c1->color(FL_CYAN);
 			for(int i=0;i<500;i++){
-				c1->update(i,(double)i/50,calc.disp((float)i/50)*calc.g()*calc.m()+calc.disp((float)i/50)*calc.disp((float)i/50)*calc.k()/2);
+				c1->update(i,(double)i/50,calc.disp((float)i/50)*calc.g()*calc.m()/2+calc.disp((float)i/50)*calc.disp((float)i/50)*calc.k()/2);
 			}
 			break;
 		case 5:
