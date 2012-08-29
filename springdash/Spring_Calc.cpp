@@ -6,27 +6,41 @@ using namespace std;
 
 float Spring_Calc::disp(float time)
 {
+	float c=sqrt(spring/mass-damp*damp/(4*mass*mass));
+	float n=grav/spring;
+	float c1=(initx+(initx+n)*damp/mass-(initv+n)*damp/(2*mass))/c;
+	float c2=initv+n;
 	float a=-damp/(2*mass);
-	float c=sqrt((spring/mass)-(damp*damp)/(4*mass*mass));
+	/*float c=sqrt((spring/mass)-(damp*damp)/(4*mass*mass));
 	float c2=-initv-grav/spring;
 	float c1=(-initx-initx*damp/mass-damp*grav/(spring*mass))/c;
-	float n=grav/spring;
-	return exp(a*time)*(c1*sin(c*time)+c2*cos(c*time))+n;
+	float n=grav/spring;*/
+	return n-exp(a*time)*(c1*sin(c*time)+c2*cos(c*time));
 }
 float Spring_Calc::vel(float time)
 {
+	float c=sqrt(spring/mass-damp*damp/(4*mass*mass));
+	float n=grav/spring;
+	float c1=(initx+(initx+n)*damp/mass-(initv+n)*damp/(2*mass))/c;
+	float c2=initv+n;
 	float a=-damp/(2*mass);
+	/*float a=-damp/(2*mass);
 	float c=sqrt((spring/mass)-(damp*damp)/(4*mass*mass));
 	float c2=-initv-grav/spring;
-	float c1=(-initx-initx*damp/mass-damp*grav/(spring*mass))/c;
-	return exp(a*time)*((a*c1-c*c2)*sin(c*time)+(a*c2+c*c1)*cos(c*time));
+	float c1=(-initx-initx*damp/mass-damp*grav/(spring*mass))/c;*/
+	return -exp(a*time)*((a*c1-c*c2)*sin(c*time)+(a*c2+c*c1)*cos(c*time));
 }
 float Spring_Calc::acc(float time)
 {
+	float c=sqrt(spring/mass-damp*damp/(4*mass*mass));
+	float n=grav/spring;
+	float c1=(initx+(initx+n)*damp/mass-(initv+n)*damp/(2*mass))/c;
+	float c2=initv+n;
 	float a=-damp/(2*mass);
+	/*float a=-damp/(2*mass);
 	float c=sqrt((spring/mass)-(damp*damp)/(4*mass*mass));
 	float c2=-initv-grav/spring;
-	float c1=(-initx-initx*damp/mass-damp*grav/(spring*mass))/c;
+	float c1=(-initx-initx*damp/mass-damp*grav/(spring*mass))/c;*/
 	return a*exp(a*time)*((a*c1-c*c2)*sin(c*time)+(a*c2+c*c1)*cos(c*time))+ c*exp(a*time)*((a*c1-c*c2)*cos(c*time)-(a*c2+c*c1)*sin(c*time));
 }
 

@@ -165,7 +165,7 @@ void Spring_Container::updategraphs()
 		case 4:
 			c1->color(FL_CYAN);
 			for(int i=0;i<500;i++){
-				c1->update(i,(double)i/50,calc.disp((float)i/50)*calc.g()*calc.m()/2+calc.disp((float)i/50)*calc.disp((float)i/50)*calc.k()/2);
+				c1->update(i,(double)i/50,-calc.disp((float)i/50)*calc.g()*calc.m()/2+calc.disp((float)i/50)*calc.disp((float)i/50)*calc.k()/2);
 			}
 			break;
 		case 5:
