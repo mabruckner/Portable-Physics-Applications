@@ -8,8 +8,8 @@ float Spring_Calc::disp(float time)
 {
 	float c=sqrt(spring/mass-damp*damp/(4*mass*mass));
 	float n=grav/spring;
-	float c1=(initx+(initx+n)*damp/mass-(initv+n)*damp/(2*mass))/c;
-	float c2=initv+n;
+	float c1=(initv+(initv+n)*damp/mass-(initx+n)*damp/(2*mass))/c;
+	float c2=initx+n;
 	float a=-damp/(2*mass);
 	/*float c=sqrt((spring/mass)-(damp*damp)/(4*mass*mass));
 	float c2=-initv-grav/spring;
@@ -21,8 +21,8 @@ float Spring_Calc::vel(float time)
 {
 	float c=sqrt(spring/mass-damp*damp/(4*mass*mass));
 	float n=grav/spring;
-	float c1=(initx+(initx+n)*damp/mass-(initv+n)*damp/(2*mass))/c;
-	float c2=initv+n;
+	float c1=(initv+(initv+n)*damp/mass-(initx+n)*damp/(2*mass))/c;
+	float c2=initx+n;
 	float a=-damp/(2*mass);
 	/*float a=-damp/(2*mass);
 	float c=sqrt((spring/mass)-(damp*damp)/(4*mass*mass));
@@ -34,8 +34,8 @@ float Spring_Calc::acc(float time)
 {
 	float c=sqrt(spring/mass-damp*damp/(4*mass*mass));
 	float n=grav/spring;
-	float c1=(initx+(initx+n)*damp/mass-(initv+n)*damp/(2*mass))/c;
-	float c2=initv+n;
+	float c1=(initv+(initv+n)*damp/mass-(initx+n)*damp/(2*mass))/c;
+	float c2=initx+n;
 	float a=-damp/(2*mass);
 	/*float a=-damp/(2*mass);
 	float c=sqrt((spring/mass)-(damp*damp)/(4*mass*mass));
