@@ -7,7 +7,7 @@ using namespace std;
 float Spring_Calc::disp(float time)
 {
 	float c=sqrt(spring/mass-damp*damp/(4*mass*mass));
-	float n=grav/spring;
+	float n=mass*grav/spring;
 	float c1=(initv+(initv+n)*damp/mass-(initx+n)*damp/(2*mass))/c;
 	float c2=initx+n;
 	float a=-damp/(2*mass);
@@ -20,7 +20,7 @@ float Spring_Calc::disp(float time)
 float Spring_Calc::vel(float time)
 {
 	float c=sqrt(spring/mass-damp*damp/(4*mass*mass));
-	float n=grav/spring;
+	float n=mass*grav/spring;
 	float c1=(initv+(initv+n)*damp/mass-(initx+n)*damp/(2*mass))/c;
 	float c2=initx+n;
 	float a=-damp/(2*mass);
@@ -33,7 +33,7 @@ float Spring_Calc::vel(float time)
 float Spring_Calc::acc(float time)
 {
 	float c=sqrt(spring/mass-damp*damp/(4*mass*mass));
-	float n=grav/spring;
+	float n=mass*grav/spring;
 	float c1=(initv+(initv+n)*damp/mass-(initx+n)*damp/(2*mass))/c;
 	float c2=initx+n;
 	float a=-damp/(2*mass);
