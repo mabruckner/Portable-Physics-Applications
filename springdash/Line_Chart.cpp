@@ -68,10 +68,10 @@ void Line_Chart::draw_line_chart()
 				tickunit*=2;
 			}
 		}
-		for(float y=tickunit*((int)(miy/tickunit));y<=may;y+=tickunit){
+		for(float yc=tickunit*((int)(miy/tickunit));yc<=may;yc+=tickunit){
 			fl_begin_line();
-				fl_vertex(mix,y);
-				fl_vertex(max,y);
+				fl_vertex(mix,yc);
+				fl_vertex(max,yc);
 			fl_end_line();
 		}
 		while(!((max-mix)/tickunit>=5&&(max-mix)/tickunit<10)){
@@ -82,10 +82,10 @@ void Line_Chart::draw_line_chart()
 				tickunit*=2;
 			}
 		}
-		for(float x=tickunit*((int)(mix/tickunit));x<=max;x+=tickunit){
+		for(float xc=tickunit*((int)(mix/tickunit));xc<=max;xc+=tickunit){
 			fl_begin_line();
-				fl_vertex(x,miy);
-				fl_vertex(x,may);
+				fl_vertex(xc,miy);
+				fl_vertex(xc,may);
 			fl_end_line();
 		}
 		fl_line_style(FL_SOLID|FL_CAP_ROUND|FL_JOIN_ROUND,2,NULL);
@@ -106,7 +106,7 @@ void Line_Chart::draw_line_chart()
 		cout<<fl_transform_x(0,0)<<" , "<<fl_transform_y(0,0)<<endl;
 		fl_line_style(FL_SOLID|FL_CAP_ROUND|FL_JOIN_ROUND,2,NULL);
 		fl_begin_line();
-		if((int)data.size()%2==0&&false){
+		if(false&&(int)data.size()%2==0){//get curves working
 			for(int i=0;i<(int)data.size()-2;i+=2){
 				fl_curve(data[i].first,data[i].second,data[i+1].first,data[i+1].second,data[i+2].first,data[i+2].second,data[i+3].first,data[i+3].second);
 			}
@@ -116,8 +116,28 @@ void Line_Chart::draw_line_chart()
 				}
 		}
 		fl_end_line();
-		fl_line_style(0);
-	fl_pop_matrix();
+	if(Fl::event_inside(this)!=0){
+		int index=0;
+		float xc=(max-mix)*(Fl::event_x()-x()-border)/(w()-2*border);
+			if(!(xc<mix||xc>max)){
+			for(index=1;index<(int)data.size();index++){
+				if(abs(data[index-1].first-xc)<abs(data[index].first-xc)){
+					index--;
+					break;
+				}
+			}cout<<index<<" , "<<data[index].first<<" , "<<data[index].second<<endl;
+			float xpos=fl_transform_x(data[index].first,data[index].second);
+			float ypos=fl_transform_y(data[index].first,data[index].second);
+			fl_pop_matrix();
+			cout<<xpos<<","<<ypos<<endl;
+			fl_arc((int)xpos-5,(int)ypos-5,10,10,0,360);
+		}else{
+			fl_pop_matrix();
+		}
+	}else{
+		fl_pop_matrix();
+	}
+	fl_line_style(0);
 /*
 	fl_color(FL_BLACK);
 	fl_line(x(),y()+h()*miy/(miy-may),x()+w(),y()+h()*miy/(miy-may));
@@ -149,4 +169,23 @@ void Line_Chart::draw()
 	}
 	
 	fl_pop_clip();
+}
+int Line_Chart::handle(int event)
+{
+	switch(event){
+		case FL_ENTER:
+			redraw();
+			return 1;
+		case FL_LEAVE:
+			redraw();
+			return 1;
+		case FL_MOVE:
+			redraw();
+			return 1;
+		case FL_DRAG:
+			redraw();
+			return 1;
+		default:
+			return Fl_Widget::handle(event);
+	}
 }

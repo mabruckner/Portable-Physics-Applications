@@ -14,17 +14,22 @@ using namespace std;
 
 class Line_Chart : public Fl_Widget
 {
+		float time;
+		bool usetime;
+		
 		bool boundrange;
 		double minrange;
 		double maxrange;
 		void draw_line_chart();
 	protected:
 		vector<pair<double,double> > data;
+		int handle(int event);
 	public:
 		Line_Chart(int x,int y,int w,int h,const char* label);
 		void draw();
 		int add(double x,double y);
 		void update(int i,double x,double y);
+		void settime(bool use,float t);
 		void rangebounds(bool yes,double min,double max);
 };
 #endif
