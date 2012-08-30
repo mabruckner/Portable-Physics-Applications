@@ -88,6 +88,13 @@ void Line_Chart::draw_line_chart()
 				fl_vertex(xc,may);
 			fl_end_line();
 		}
+		fl_color(color());
+		if(usetime){
+			fl_begin_line();
+				fl_vertex(time,miy);
+				fl_vertex(time,may);
+			fl_end_line();
+		}
 		fl_line_style(FL_SOLID|FL_CAP_ROUND|FL_JOIN_ROUND,2,NULL);
 		fl_color(FL_BLACK);
 		if(may>0&&miy<0){

@@ -122,6 +122,7 @@ void Spring_Container::timeout()
 		changed=false;
 	}
 	updatetext();
+	c1->settime(true,t);
 	gl_box->disp=(float)calc.disp(t);
 	gl_box->redraw();
 	t+=.1;
