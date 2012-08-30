@@ -6,6 +6,9 @@
 #include "Line_Chart.h"
 
 #include <iostream>
+#include<sstream>
+#include<cstring>
+
 
 using namespace std;
 
@@ -53,7 +56,7 @@ void Line_Chart::draw_line_chart()
 		may=maxrange>may ? maxrange : may;
 	}
 	float border=5;
-	cout<<mix<<endl<<max<<endl<<miy<<endl<<may<<endl;
+	//cout<<mix<<endl<<max<<endl<<miy<<endl<<may<<endl;
 	fl_push_matrix();
 		fl_translate(x()+border,y()+border);
 		fl_color(0xaa,0xaa,0xaa);
@@ -110,7 +113,7 @@ void Line_Chart::draw_line_chart()
 			fl_end_line();
 		}
 		fl_color(color());
-		cout<<fl_transform_x(0,0)<<" , "<<fl_transform_y(0,0)<<endl;
+		//cout<<fl_transform_x(0,0)<<" , "<<fl_transform_y(0,0)<<endl;
 		fl_line_style(FL_SOLID|FL_CAP_ROUND|FL_JOIN_ROUND,2,NULL);
 		fl_begin_line();
 		if(false&&(int)data.size()%2==0){//get curves working
@@ -123,10 +126,10 @@ void Line_Chart::draw_line_chart()
 				}
 		}
 		fl_end_line();
-	if(Fl::event_inside(this)!=0){
+/*	if(Fl::event_inside(this)!=0){
 		int index=0;
 		float xc=(max-mix)*(Fl::event_x()-x()-border)/(w()-2*border);
-			if(!(xc<mix||xc>max)){
+		if(!(xc<mix||xc>max)){
 			for(index=1;index<(int)data.size();index++){
 				if(abs(data[index-1].first-xc)<abs(data[index].first-xc)){
 					index--;
@@ -141,9 +144,9 @@ void Line_Chart::draw_line_chart()
 		}else{
 			fl_pop_matrix();
 		}
-	}else{
+	}else{*/
 		fl_pop_matrix();
-	}
+//	}
 	fl_line_style(0);
 /*
 	fl_color(FL_BLACK);
@@ -181,18 +184,67 @@ int Line_Chart::handle(int event)
 {
 	switch(event){
 		case FL_ENTER:
-			redraw();
+			//tipset();
 			return 1;
 		case FL_LEAVE:
-			redraw();
+			//tipset();
 			return 1;
 		case FL_MOVE:
-			redraw();
+			//tipset();
 			return 1;
 		case FL_DRAG:
-			redraw();
+			//tipset();
 			return 1;
 		default:
 			return Fl_Widget::handle(event);
 	}
+}
+void Line_Chart::tipset()
+{
+	
+	if((int)data.size()<=0){
+		return;
+	}
+	double mix=data[0].first;
+	double max=data[0].first;
+	double miy=data[0].second;
+	double may=data[0].second;
+
+	for(int i=1;i<(int)data.size();i++){
+		mix=mix>data[i].first ? data[i].first : mix;
+		max=max<data[i].first ? data[i].first : max;
+		miy=miy>data[i].second ? data[i].second : miy;
+		may=may<data[i].second ? data[i].second : may;
+	}
+	if(boundrange){
+		miy=minrange<miy ? minrange : miy;
+		may=maxrange>may ? maxrange : may;
+	}
+	float border=5;
+	int index=0;
+	float xc=(max-mix)*(Fl::event_x()-x()-border)/(w()-2*border);
+	if(!(xc<mix||xc>max)){
+		for(index=1;index<(int)data.size();index++){
+			if(abs(data[index-1].first-xc)<abs(data[index].first-xc)){
+				index--;
+				break;
+			}
+		}cout<<index<<" , "<<data[index].first<<" , "<<data[index].second<<endl;
+		stringstream s (stringstream::in | stringstream::out);
+		s<<data[index].first<<" , "<<data[index].second;
+		//cout<<s.str().data()<<endl;
+		copy_tooltip(s.str().data());
+	}else{
+		tooltip("");
+	}
+}
+
+void Line_Chart::settime(bool use,float t){
+	time=t;
+	bool tmp=usetime;
+	usetime=use;
+	if(!(use||tmp)){
+		return;
+	}
+	redraw();
 }

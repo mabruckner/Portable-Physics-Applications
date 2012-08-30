@@ -21,6 +21,7 @@ class Line_Chart : public Fl_Widget
 		double minrange;
 		double maxrange;
 		void draw_line_chart();
+		void tipset();
 	protected:
 		vector<pair<double,double> > data;
 		int handle(int event);
@@ -29,7 +30,7 @@ class Line_Chart : public Fl_Widget
 		void draw();
 		int add(double x,double y);
 		void update(int i,double x,double y);
-		void settime(bool use,float t){time=t;bool tmp=usetime;usetime=use;if(tmp)redraw();};
+		void settime(bool use,float t);
 		void rangebounds(bool yes,double min,double max);
 };
 #endif
