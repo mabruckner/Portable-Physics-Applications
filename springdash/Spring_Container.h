@@ -7,6 +7,7 @@
 #include<FL/Fl_Chart.H>
 #include<FL/Fl_Multiline_Output.H>
 #include<FL/Fl_Choice.H>
+#include<FL/Fl_Menu_Bar.H>
 
 #include<cmath>
 
@@ -39,6 +40,8 @@ class Spring_Container : public Fl_Window
 		Fl_Slider* v_slider;
 
 		Fl_Choice* gmenu;
+
+		Fl_Menu_Bar* menu;
 
 		Line_Chart* c1;
 

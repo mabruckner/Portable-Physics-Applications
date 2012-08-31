@@ -46,11 +46,11 @@ float Spring_Calc::acc(float time)
 
 string Spring_Calc::eqstring()
 {
-	double a=-(double)damp/(2*mass);
-	double c=sqrt(((double)spring/mass)-((double)damp*damp)/(4*mass*mass));
-	double c2=-initv-(double)grav/spring;
-	double c1=(-initx-(double)initx*damp/mass-(double)damp*grav/(spring*mass))/c;
-	double n=(double)grav/spring;
+	float c=sqrt(spring/mass-damp*damp/(4*mass*mass));
+	float n=mass*grav/spring;
+	float c1=(initv+(initv+n)*damp/mass-(initx+n)*damp/(2*mass))/c;
+	float c2=initx+n;
+	float a=-damp/(2*mass);
 	stringstream out (stringstream::in | stringstream::out);
 	if(a!=0&&(c1!=0||c2!=0)){
 		out<<"e^("<<a<<"t)";

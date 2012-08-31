@@ -11,35 +11,38 @@
 
 Spring_Container::Spring_Container(int x,int y,int w,int h,const char* label=0) : Fl_Window(x,y,w,h,label)
 {
-	gl_box=new Spring_Window(190,10,w-200,h-180,"GL");
+	menu=new Fl_Menu_Bar(0,0,w,20,"MENUBAR!");
+	menu->add("File/Export",0,0,0,0);
+	//menu->add("File/Quit",0,0,0,0);
+	gl_box=new Spring_Window(190,30,w-200,h-200,"GL");
 	resizable(gl_box);
-	k_slider=new Fl_Slider(10,10,20,h-170,"k");
+	k_slider=new Fl_Slider(10,30,20,h-190,"k");
 	k_slider->step(1);
-	k_slider->range(1,100);
+	k_slider->range(100,1);
 	k_slider->value(10);
 	k_slider->tooltip("spring constant");
-	l_slider=new Fl_Slider(40,10,20,h-170,"l");
-	l_slider->step(.1);
-	l_slider->range(0,1);
+	l_slider=new Fl_Slider(40,30,20,h-190,"l");
+	l_slider->step(.01);
+	l_slider->range(1,0);
 	l_slider->value(.1);
 	l_slider->tooltip("damping constant");
-	m_slider=new Fl_Slider(70,10,20,h-170,"m");
-	m_slider->step(.1);
-	m_slider->range(.1,10);
+	m_slider=new Fl_Slider(70,30,20,h-190,"m");
+	m_slider->step(.05);
+	m_slider->range(10,.1);
 	m_slider->value(1);
 	m_slider->tooltip("mass");
-	g_slider=new Fl_Slider(100,10,20,h-170,"g");
+	g_slider=new Fl_Slider(100,30,20,h-190,"g");
 	g_slider->step(.1);
 	g_slider->range(10,-10);
 	g_slider->value(-9.8);
 	g_slider->tooltip("acceleration due to gravity");
 
-	x_slider=new Fl_Slider(130,10,20,h-170,"x0");
-	x_slider->step(.5);
+	x_slider=new Fl_Slider(130,30,20,h-190,"x0");
+	x_slider->step(.1);
 	x_slider->range(-10,10);
 	x_slider->value(0);
 	x_slider->tooltip("initial position");
-	v_slider=new Fl_Slider(160,10,20,h-170,"v0");
+	v_slider=new Fl_Slider(160,30,20,h-190,"v0");
 	v_slider->step(.5);
 	v_slider->range(-10,10);
 	v_slider->value(0);
