@@ -8,6 +8,10 @@
 #include<FL/Fl_Multiline_Output.H>
 #include<FL/Fl_Choice.H>
 #include<FL/Fl_Menu_Bar.H>
+#include<FL/Fl_Button.H>
+#include<FL/Fl_Check_Button.H>
+#include<FL/Fl_File_Input.H>
+#include<FL/Fl_Float_Input.H>
 
 #include<cmath>
 
@@ -24,9 +28,29 @@ class Spring_Container : public Fl_Window
 		static void timeoutcall(void* data);
 		void timeout();
 		static void graphchanged(Fl_Widget* w,void* v);
+		static void startexport(Fl_Widget* w,void* v){((Spring_Container*)v)->export_win->show();};
 		void updategraphs();
 		int g;
+
+		static void exportfile(Fl_Widget* w,void* v);
+
+		Fl_Window* export_win;
+		Fl_Button* export_button;
+		Fl_Check_Button* export_time;
+		Fl_Check_Button* export_disp;
+		Fl_Check_Button* export_vel;
+		Fl_Check_Button* export_acc;
+		Fl_Check_Button* export_KE;
+		Fl_Check_Button* export_EPE;
+		Fl_Check_Button* export_GPE;
+		Fl_Check_Button* export_E;
+		Fl_Float_Input* export_min;
+		Fl_Float_Input* export_step;
+		Fl_Float_Input* export_max;
+		Fl_File_Input* export_file;
+		Spring_Calc calc;
 	private:
+
 		void initgraphs();
 		void updatetext();
 		Spring_Window* gl_box;
@@ -45,7 +69,6 @@ class Spring_Container : public Fl_Window
 
 		Line_Chart* c1;
 
-		Spring_Calc calc;
 
 		Fl_Multiline_Output* o_text;
 

@@ -1,10 +1,12 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Multiline_Output.H>
+#include <FL/Fl_File_Chooser.H>
 
 #include<iostream>
 #include<sstream>
 #include<cstring>
+#include<fstream>
 
 #include "Spring_Container.h"
 #include "Line_Chart.h"
@@ -12,7 +14,7 @@
 Spring_Container::Spring_Container(int x,int y,int w,int h,const char* label=0) : Fl_Window(x,y,w,h,label)
 {
 	menu=new Fl_Menu_Bar(0,0,w,20,"MENUBAR!");
-	menu->add("File/Export",0,0,0,0);
+	menu->add("File/Export",0,Spring_Container::startexport,this,0);
 	//menu->add("File/Quit",0,0,0,0);
 	gl_box=new Spring_Window(190,30,w-200,h-200,"GL");
 	resizable(gl_box);
@@ -93,6 +95,35 @@ Spring_Container::Spring_Container(int x,int y,int w,int h,const char* label=0) 
 
 	t=0;
 
+	export_win=new Fl_Window(300,250,"Export CSV");
+	export_button=new Fl_Button(100,220,100,20,"EXPORT");
+	export_time=new Fl_Check_Button(10,10,100,20,"time");
+	export_disp=new Fl_Check_Button(10,30,100,20,"displacement");
+	export_vel=new Fl_Check_Button(10,50,100,20,"velocity");
+	export_acc=new Fl_Check_Button(10,70,100,20,"acceleration");
+	export_KE=new Fl_Check_Button(10,90,100,20,"kinetic energy");
+	export_EPE=new Fl_Check_Button(10,110,100,20,"elastic potential energy");
+	export_GPE=new Fl_Check_Button(10,130,100,20,"gravitational potential energy");
+	export_E=new Fl_Check_Button(10,150,100,20,"total energy");
+	export_file=new Fl_File_Input(10,170,280,30,"");
+
+	export_min=new Fl_Float_Input(200,10,90,20,"min");
+	export_min->value("0");
+	export_step=new Fl_Float_Input(200,40,90,20,"step");
+	export_step->value(".1");
+	export_max=new Fl_Float_Input(202,70,90,20,"max");
+	export_max->value("10");
+
+	export_button->callback(Spring_Container::exportfile,(void*)this);
+export_win->show();
+	export_win->hide();
+	/*	Fl_Check_Button* export_disp;
+		Fl_Check_Button* export_vel;
+		Fl_Check_Button* export_acc;
+		Fl_Check_Button* export_KE;
+		Fl_Check_Button* export_EPE;
+		Fl_Check_Button* export_GPE;*/
+
 	Fl::add_timeout(.1,timeoutcall,(void*)this);
 }
 void Spring_Container::call(Fl_Widget* w,void* v)
@@ -111,7 +142,7 @@ void Spring_Container::valuechanged()
 
 	changed=true;
 
-	cout<<calc.eqstring()<<endl;
+	//cout<<calc.eqstring()<<endl;
 }
 void Spring_Container::timeoutcall(void* data)
 {
@@ -125,18 +156,18 @@ void Spring_Container::timeout()
 		changed=false;
 	}
 	updatetext();
-	c1->settime(true,t);
 	gl_box->disp=(float)calc.disp(t);
 	gl_box->redraw();
 	t+=.1;
 	if(t>=10){
 		t-=10;
 	}
+	t=c1->settime(true,t);
 }
 void Spring_Container::initgraphs()
 {
 	for(int i=0;i<500;i++){
-		cout<<c1->add((double)i/50,calc.disp((float)i/50))<<endl;
+		c1->add((double)i/50,calc.disp((float)i/50));
 	}
 }
 void Spring_Container::updategraphs()
@@ -204,4 +235,81 @@ void Spring_Container::updatetext()
 void Spring_Container::graphchanged(Fl_Widget* w,void* v)
 {
 	((Spring_Container*)v)->updategraphs();
+}
+void Spring_Container::exportfile(Fl_Widget* w,void* v){
+	Spring_Container* box=(Spring_Container*)v;
+	/*Fl_File_Chooser dialog("","*.csv",Fl_File_Chooser::CREATE,"choose or create a file");
+	if(dialog.show()==0){
+		return;
+	}*/
+	char * filepath=fl_dir_chooser("select a directory",0,0);
+	if(filepath==NULL){
+		delete filepath;
+		box->export_win->hide();
+		return;
+	}
+	stringstream s(stringstream::in | stringstream::out);
+	s<<filepath<<"/"<<box->export_file->value();
+	const char * fullpath=s.str().data();
+	ofstream f(fullpath);
+	double start=0;
+	double end=10;
+	double step=.1;
+	Spring_Calc* calc=&(box->calc);
+	for(int i=0;step*i+start<=end;i++){
+		double t=step*i+start;
+		bool comma=false;
+		if(box->export_time->value()){
+			comma=true;
+			float value=floor(t*1000)/1000;
+			f<<value<<"s";
+		}
+		if(box->export_disp->value()){
+			if(comma)f<<",";
+			comma=true;
+			float value=floor(calc->disp(t)*1000)/1000;
+			f<<value<<"m";
+		}
+		if(box->export_vel->value()){
+			if(comma)f<<",";
+			comma=true;
+			float value=floor(calc->vel(t)*1000)/1000;
+			f<<value<<"m/s";
+		}
+		if(box->export_acc->value()){
+			if(comma)f<<",";
+			comma=true;
+			float value=floor(calc->acc(t)*1000)/1000;
+			f<<value<<"m/s*s";
+		}
+		if(box->export_KE->value()){
+			if(comma)f<<",";
+			comma=true;
+			float value=floor(calc->vel(t)*calc->vel(t)*calc->m()*500)/1000;
+			f<<value<<"J";
+		}
+		if(box->export_EPE->value()){
+			if(comma)f<<",";
+			comma=true;
+			float value=floor(calc->disp(t)*calc->disp(t)*calc->k()*500)/1000;
+			f<<value<<"J";
+		}
+		if(box->export_GPE->value()){
+			if(comma)f<<",";
+			comma=true;
+			float value=floor(-calc->disp(t)*calc->g()*calc->m()*1000)/1000;
+			f<<value<<"J";
+		}
+		if(box->export_E->value()){
+			if(comma)f<<",";
+			comma=true;
+			float value=floor(calc->vel(t)*calc->vel(t)*calc->m()*500+calc->disp(t)*calc->disp(t)*calc->k()*500-calc->disp(t)*calc->g()*calc->m()*1000)/1000;
+			f<<value<<"J";
+		}
+		f<<endl;
+	}
+	f.close();
+	delete filepath;
+	box->export_win->hide();
+//	char *filename=fl_file_chooser("choose file path","*.csv","",0);
 }

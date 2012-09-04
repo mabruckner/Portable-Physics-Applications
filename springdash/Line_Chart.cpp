@@ -15,6 +15,7 @@ using namespace std;
 Line_Chart::Line_Chart(int x,int y,int w,int h,const char* label) : Fl_Widget(x,y,w,h,label)
 {
 	box(FL_PLASTIC_DOWN_BOX);
+	mousein=false;
 	boundrange=false;
 	minrange=0;
 	maxrange=0;
@@ -184,16 +185,16 @@ int Line_Chart::handle(int event)
 {
 	switch(event){
 		case FL_ENTER:
-			//tipset();
+			mousein=true;
 			return 1;
 		case FL_LEAVE:
-			//tipset();
+			mousein=false;
 			return 1;
 		case FL_MOVE:
-			//tipset();
+			tipset();
 			return 1;
 		case FL_DRAG:
-			//tipset();
+			tipset();
 			return 1;
 		default:
 			return Fl_Widget::handle(event);
@@ -201,7 +202,9 @@ int Line_Chart::handle(int event)
 }
 void Line_Chart::tipset()
 {
-	
+	if(!mousein){
+		return;
+	}
 	if((int)data.size()<=0){
 		return;
 	}
@@ -224,7 +227,8 @@ void Line_Chart::tipset()
 	int index=0;
 	float xc=(max-mix)*(Fl::event_x()-x()-border)/(w()-2*border);
 	if(!(xc<mix||xc>max)){
-		for(index=1;index<(int)data.size();index++){
+		time=xc;
+	/*	for(index=1;index<(int)data.size();index++){
 			if(abs(data[index-1].first-xc)<abs(data[index].first-xc)){
 				index--;
 				break;
@@ -235,16 +239,19 @@ void Line_Chart::tipset()
 		//cout<<s.str().data()<<endl;
 		copy_tooltip(s.str().data());
 	}else{
-		tooltip("");
+		tooltip("");*/
 	}
 }
 
-void Line_Chart::settime(bool use,float t){
-	time=t;
+float Line_Chart::settime(bool use,float t){
+	if(!mousein){
+		time=t;
+	}
 	bool tmp=usetime;
 	usetime=use;
 	if(!(use||tmp)){
-		return;
+		return t;
 	}
 	redraw();
+	return time;
 }
