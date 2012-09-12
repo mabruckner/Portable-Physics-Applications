@@ -1,7 +1,7 @@
 spring: spring.cpp
 	g++ -Wall -g spring.cpp `fltk-config --use-gl --cxxflags --ldflags` -o spring
 
-dash: dash.o Spring_Window.o Spring_Container.o Spring_Calc.o Line_Chart.o
+dash: dash.o Spring_Window.o Spring_Container.o Spring_Calc.o Line_Chart.o ../graphwidget/Graph.o
 	g++ -Wall -g $^ `fltk-config --use-gl --cxxflags --ldflags` -o dash
 
 dash.o: dash.cpp Spring_Container.h
@@ -18,3 +18,6 @@ Spring_Calc.o: Spring_Calc.cpp Spring_Calc.h
 
 Line_Chart.o: Line_Chart.cpp Line_Chart.h
 	g++ -Wall -g `fltk-config --use-gl --cxxflags --ldflags` -c $<
+
+../graphwidget/Graph.o: ../graphwidget/Graph.cpp ../graphwidget/Graph.h
+	make -C ../graphwidget

@@ -72,7 +72,8 @@ Spring_Container::Spring_Container(int x,int y,int w,int h,const char* label=0) 
 	v_slider->callback(Spring_Container::call,(void*)this);
 
 	g=0;
-	c1=new Line_Chart(10,h-110,w-20,100,"CHART");
+	c1=new Line_Chart(10,h-110,170,100,"CHART");
+	graph=new Graph(190,h-110,w-200,100,"GRAPH");
 	gmenu=new Fl_Choice(10,h-140,170,20,"");
 	gmenu->add("Displacement",0,Spring_Container::graphchanged,this,0);
 	gmenu->add("Velocity",0,Spring_Container::graphchanged,this,0);
@@ -158,7 +159,7 @@ void Spring_Container::timeoutcall(void* data)
 void Spring_Container::timeout()
 {
 	if(changed){
-		updategraphs();
+		initgraphs();
 		changed=false;
 	}
 	updatetext();
@@ -172,12 +173,31 @@ void Spring_Container::timeout()
 }
 void Spring_Container::initgraphs()
 {
+	bool add=(int)graph->ptdata().size()==0;
 	for(int i=0;i<500;i++){
-		c1->add((double)i/50,calc.disp((float)i/50));
+		//c1->add((double)i/50,calc.disp((float)i/50));
+		vector<double> pt=vector<double>();
+		double t=(double)i/50;
+		pt.push_back(t);
+		pt.push_back(calc.disp(t));
+		pt.push_back(calc.vel(t));
+		pt.push_back(calc.acc(t));
+		pt.push_back(calc.acc(t)/calc.m());
+		pt.push_back(-calc.disp(t)*calc.g()*calc.m()+calc.disp(t)*calc.disp(t)*calc.k()/2);
+		pt.push_back(calc.vel(t)*calc.vel(t)*calc.m()/2);
+		pt.push_back(calc.vel(t)*calc.vel(t)*calc.m()/2-calc.disp(t)*calc.g()*calc.m()+calc.disp(t)*calc.disp(t)*calc.k()/2);
+		if(add){
+			graph->add(pt);
+		}else{
+			graph->set(i,pt);
+		}
 	}
+	graph->update();
 }
 void Spring_Container::updategraphs()
 {
+	graph->yaxis(gmenu->value()+1);
+	graph->update();/*
 	switch(gmenu->value()){
 		case 0:
 			c1->color(FL_BLUE);
@@ -223,7 +243,7 @@ void Spring_Container::updategraphs()
 			break;
 	}
 			
-	c1->redraw();
+	c1->redraw();*/
 }
 void Spring_Container::updatetext()
 {
