@@ -24,6 +24,8 @@ class Line_Chart : public Fl_Widget
 		void tipset();
 
 		bool mousein;
+
+		static const float border=5;
 	protected:
 		vector<pair<double,double> > data;
 		int handle(int event);

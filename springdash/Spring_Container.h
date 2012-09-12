@@ -11,7 +11,7 @@
 #include<FL/Fl_Button.H>
 #include<FL/Fl_Check_Button.H>
 #include<FL/Fl_File_Input.H>
-#include<FL/Fl_Float_Input.H>
+#include<FL/Fl_Counter.H>
 
 #include<cmath>
 
@@ -44,9 +44,9 @@ class Spring_Container : public Fl_Window
 		Fl_Check_Button* export_EPE;
 		Fl_Check_Button* export_GPE;
 		Fl_Check_Button* export_E;
-		Fl_Float_Input* export_min;
-		Fl_Float_Input* export_step;
-		Fl_Float_Input* export_max;
+		Fl_Counter* export_min;
+		Fl_Counter* export_step;
+		Fl_Counter* export_max;
 		Fl_File_Input* export_file;
 		Spring_Calc calc;
 	private:

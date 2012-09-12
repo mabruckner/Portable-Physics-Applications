@@ -56,7 +56,7 @@ void Line_Chart::draw_line_chart()
 		miy=minrange<miy ? minrange : miy;
 		may=maxrange>may ? maxrange : may;
 	}
-	float border=5;
+	//float border=5;
 	//cout<<mix<<endl<<max<<endl<<miy<<endl<<may<<endl;
 	fl_push_matrix();
 		fl_translate(x()+border,y()+border);
@@ -223,7 +223,7 @@ void Line_Chart::tipset()
 		miy=minrange<miy ? minrange : miy;
 		may=maxrange>may ? maxrange : may;
 	}
-	float border=5;
+	//float border=5;
 	int index=0;
 	float xc=(max-mix)*(Fl::event_x()-x()-border)/(w()-2*border);
 	if(!(xc<mix||xc>max)){

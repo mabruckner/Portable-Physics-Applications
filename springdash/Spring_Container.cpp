@@ -22,7 +22,7 @@ Spring_Container::Spring_Container(int x,int y,int w,int h,const char* label=0) 
 	k_slider->step(1);
 	k_slider->range(100,1);
 	k_slider->value(10);
-	k_slider->tooltip("spring constant");
+	k_slider->tooltip("spring constant (Nm)");
 	l_slider=new Fl_Slider(40,30,20,h-190,"l");
 	l_slider->step(.01);
 	l_slider->range(1,0);
@@ -32,23 +32,23 @@ Spring_Container::Spring_Container(int x,int y,int w,int h,const char* label=0) 
 	m_slider->step(.05);
 	m_slider->range(10,.1);
 	m_slider->value(1);
-	m_slider->tooltip("mass");
+	m_slider->tooltip("mass (kg)");
 	g_slider=new Fl_Slider(100,30,20,h-190,"g");
 	g_slider->step(.1);
 	g_slider->range(10,-10);
 	g_slider->value(-9.8);
-	g_slider->tooltip("acceleration due to gravity");
+	g_slider->tooltip("acceleration due to gravity (m/s*s)");
 
 	x_slider=new Fl_Slider(130,30,20,h-190,"x0");
 	x_slider->step(.1);
 	x_slider->range(-10,10);
 	x_slider->value(0);
-	x_slider->tooltip("initial position");
+	x_slider->tooltip("initial position (m)");
 	v_slider=new Fl_Slider(160,30,20,h-190,"v0");
 	v_slider->step(.5);
 	v_slider->range(-10,10);
 	v_slider->value(0);
-	v_slider->tooltip("initial velocity");
+	v_slider->tooltip("initial velocity (m/s)");
 
 	k_slider->type(FL_VERT_NICE_SLIDER);
 	l_slider->type(FL_VERT_NICE_SLIDER);
@@ -107,12 +107,18 @@ Spring_Container::Spring_Container(int x,int y,int w,int h,const char* label=0) 
 	export_E=new Fl_Check_Button(10,150,100,20,"total energy");
 	export_file=new Fl_File_Input(10,170,280,30,"");
 
-	export_min=new Fl_Float_Input(200,10,90,20,"min");
-	export_min->value("0");
-	export_step=new Fl_Float_Input(200,40,90,20,"step");
-	export_step->value(".1");
-	export_max=new Fl_Float_Input(202,70,90,20,"max");
-	export_max->value("10");
+	export_min=new Fl_Counter(200,10,90,20,"min");
+	export_min->value(0);
+	export_min->step(1);
+	export_min->lstep(10);
+	export_step=new Fl_Counter(200,50,90,20,"step");
+	export_step->value(.1);
+	export_step->step(.01);
+	export_step->lstep(.1);
+	export_max=new Fl_Counter(202,90,90,20,"max");
+	export_max->value(10);
+	export_max->step(1);
+	export_max->lstep(10);
 
 	export_button->callback(Spring_Container::exportfile,(void*)this);
 export_win->show();
@@ -244,7 +250,6 @@ void Spring_Container::exportfile(Fl_Widget* w,void* v){
 	}*/
 	char * filepath=fl_dir_chooser("select a directory",0,0);
 	if(filepath==NULL){
-		delete filepath;
 		box->export_win->hide();
 		return;
 	}
@@ -252,64 +257,72 @@ void Spring_Container::exportfile(Fl_Widget* w,void* v){
 	s<<filepath<<"/"<<box->export_file->value();
 	const char * fullpath=s.str().data();
 	ofstream f(fullpath);
+	//s.ignore();
 	double start=0;
+	start=box->export_min->value();
+	cout<<box->export_min->value()<<endl<<start<<endl;
 	double end=10;
+	end=box->export_max->value();
+	end=end>=start ? end : start;
 	double step=.1;
+	s.ignore();
+	step=box->export_step->value();
+	step=step>0? step : .01;
 	Spring_Calc* calc=&(box->calc);
 	for(int i=0;step*i+start<=end;i++){
-		double t=step*i+start;
+		double t=step*i+start;cout<<t<<endl;
 		bool comma=false;
 		if(box->export_time->value()){
 			comma=true;
 			float value=floor(t*1000)/1000;
-			f<<value<<"s";
+			f<<value;
 		}
 		if(box->export_disp->value()){
 			if(comma)f<<",";
 			comma=true;
 			float value=floor(calc->disp(t)*1000)/1000;
-			f<<value<<"m";
+			f<<value;
 		}
 		if(box->export_vel->value()){
 			if(comma)f<<",";
 			comma=true;
 			float value=floor(calc->vel(t)*1000)/1000;
-			f<<value<<"m/s";
+			f<<value;
 		}
 		if(box->export_acc->value()){
 			if(comma)f<<",";
 			comma=true;
 			float value=floor(calc->acc(t)*1000)/1000;
-			f<<value<<"m/s*s";
+			f<<value;
 		}
 		if(box->export_KE->value()){
 			if(comma)f<<",";
 			comma=true;
 			float value=floor(calc->vel(t)*calc->vel(t)*calc->m()*500)/1000;
-			f<<value<<"J";
+			f<<value;
 		}
 		if(box->export_EPE->value()){
 			if(comma)f<<",";
 			comma=true;
 			float value=floor(calc->disp(t)*calc->disp(t)*calc->k()*500)/1000;
-			f<<value<<"J";
+			f<<value;
 		}
 		if(box->export_GPE->value()){
 			if(comma)f<<",";
 			comma=true;
 			float value=floor(-calc->disp(t)*calc->g()*calc->m()*1000)/1000;
-			f<<value<<"J";
+			f<<value;
 		}
 		if(box->export_E->value()){
 			if(comma)f<<",";
 			comma=true;
 			float value=floor(calc->vel(t)*calc->vel(t)*calc->m()*500+calc->disp(t)*calc->disp(t)*calc->k()*500-calc->disp(t)*calc->g()*calc->m()*1000)/1000;
-			f<<value<<"J";
+			f<<value;
 		}
 		f<<endl;
 	}
 	f.close();
-	delete filepath;
+	//delete filepath;
 	box->export_win->hide();
 //	char *filename=fl_file_chooser("choose file path","*.csv","",0);
 }
