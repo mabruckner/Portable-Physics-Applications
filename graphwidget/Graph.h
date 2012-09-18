@@ -18,6 +18,10 @@ class Graph : public Fl_Gl_Window
 		int xvar;
 		int yvar;
 		bool connect;
+		bool mouseover;
+		double value;
+		double mousex;
+		double mousey;
 
 		void FixViewport(int w,int h);
 		float border;
@@ -25,7 +29,7 @@ class Graph : public Fl_Gl_Window
 		void sort(int start,int end);
 	protected:
 		void draw();
-	public: 
+	public:
 		Graph(int x,int y,int w,int h,const char* label);
 		void resize(int x,int y,int w,int h);
 
@@ -48,6 +52,11 @@ class Graph : public Fl_Gl_Window
 		void set(int index,vector<double> pt){data[index]=pt;ordered[index]=pt;};
 
 		void update(){sort(sort());redraw();};
+
+		void value(double v);
+		double value();
+
+		
 };
 
 #endif

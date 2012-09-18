@@ -38,11 +38,11 @@ void Graph::draw()
 		}
 		glPushMatrix();
 		glScalef(2.0/h(),2.0/h(),1);
-		glTranslatef(-h()/2.0,-h()/2.0,0);
+		glTranslatef(-w()/2.0,-h()/2.0,0);
 		glBegin(GL_LINE_LOOP);
 			glVertex3f(border,border,0);
-			glVertex3f(h()-border,border,0);
-			glVertex3f(h()-border,h()-border,0);
+			glVertex3f(w()-border,border,0);
+			glVertex3f(w()-border,h()-border,0);
 			glVertex3f(border,h()-border,0);
 		glEnd();
 		glTranslatef(border,border,0);
