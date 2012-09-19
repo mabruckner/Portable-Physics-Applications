@@ -74,6 +74,7 @@ Spring_Container::Spring_Container(int x,int y,int w,int h,const char* label=0) 
 	g=0;
 	c1=new Line_Chart(10,h-110,170,100,"CHART");
 	graph=new Graph(190,h-110,w-200,100,"GRAPH");
+	graph->color(FL_BLUE);
 	gmenu=new Fl_Choice(10,h-140,170,20,"");
 	gmenu->add("Displacement",0,Spring_Container::graphchanged,this,0);
 	gmenu->add("Velocity",0,Spring_Container::graphchanged,this,0);
@@ -192,6 +193,22 @@ void Spring_Container::initgraphs()
 			graph->set(i,pt);
 		}
 	}
+	if(add){
+		vector<string> v=vector<string>();
+		v.push_back("time");
+		v.push_back("position");
+		v.push_back("velocity");
+		v.push_back("acceleration");
+		v.push_back("net force");
+		v.push_back("potential energy");
+		v.push_back("kinetic energy");
+		v.push_back("total energy");
+		graph->labellist(v);
+		cout<<"hello"<<endl;
+		cout<<(int)v.size()<<endl;
+		cout<<(int)graph->labellist().size()<<endl;
+	}
+		cout<<(int)graph->labellist().size()<<endl;
 	graph->update();
 }
 void Spring_Container::updategraphs()

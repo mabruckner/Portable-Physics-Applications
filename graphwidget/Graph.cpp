@@ -1,5 +1,6 @@
 #include "Graph.h"
 #include <FL/gl.h>
+#include <FL/fl_draw.H>
 #include <iostream>
 
 using namespace std;
@@ -45,9 +46,19 @@ void Graph::draw()
 			glVertex3f(w()-border,h()-border,0);
 			glVertex3f(border,h()-border,0);
 		glEnd();
+		if((int)labels.size()>xvar){
+			gl_font(fl_font(),(int)border/2);
+			gl_draw(labels[xvar].data(),(int)labels[xvar].size(),(float)w()/2,border/2);
+			if((int)labels.size()>yvar){
+				string top=(labels[xvar]+" VS. "+labels[yvar]);
+				gl_font(fl_font(),(int)border);
+				gl_draw(top.data(),w()/4,h()-(int)border,w()/2,border,FL_ALIGN_CENTER);
+			}
+		}
 		glTranslatef(border,border,0);
 		glScalef((w()-border*2)/(max-mix),(h()-border*2)/(may-miy),1);
 		glTranslatef(-mix,-miy,0);
+		gl_color(color());
 		glBegin(GL_LINE_STRIP);
 		for(int i=0;i<(int)ordered.size();i++){
 			glVertex3d(ordered[i][xvar],ordered[i][yvar],0);

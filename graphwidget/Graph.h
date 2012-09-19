@@ -6,6 +6,7 @@
 #include <FL/Fl_Gl_Window.H>
 
 #include <vector>
+#include <string>
 
 using namespace std;
 
@@ -14,6 +15,8 @@ class Graph : public Fl_Gl_Window
 	private:
 		vector<vector<double> > data;
 		vector<vector<double> > ordered;
+		vector<string> units;
+		vector<string> labels;
 		int orderby;
 		int xvar;
 		int yvar;
@@ -53,10 +56,14 @@ class Graph : public Fl_Gl_Window
 
 		void update(){sort(sort());redraw();};
 
-		void value(double v);
-		double value();
+		void select(double v);
+		double select();
 
-		
+		void unitlist(vector<string> l){units=l;};
+		vector<string> unitlist(){return units;};
+
+		void labellist(vector<string> l){labels=l;};
+		vector<string> labellist(){return labels;};
 };
 
 #endif
