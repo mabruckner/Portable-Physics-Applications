@@ -45,14 +45,9 @@ void Graph::draw()
 			glVertex3f(w()-border,border,0);
 			glVertex3f(w()-border,h()-border,0);
 			glVertex3f(border,h()-border,0);
-		glEnd();/*
-		glBegin(GL_LINES);
-			glVertex3f(w()/2,0,0);
-			glVertex3f(w()/2,h(),0);
-		glEnd();*/
+		glEnd();
 		if((int)labels.size()>xvar){
 			gl_font(fl_font(),(int)border/2);
-			//gl_draw(labels[xvar].data(),(int)labels[xvar].size(),(float)w()/2,border/2);
 			gl_draw(labels[xvar].data(),0,0,w(),(int)border,FL_ALIGN_CENTER);
 			if((int)labels.size()>yvar){
 				string top=(labels[xvar]+" VS. "+labels[yvar]);

@@ -204,11 +204,7 @@ void Spring_Container::initgraphs()
 		v.push_back("kinetic energy");
 		v.push_back("total energy");
 		graph->labellist(v);
-		cout<<"hello"<<endl;
-		cout<<(int)v.size()<<endl;
-		cout<<(int)graph->labellist().size()<<endl;
 	}
-		cout<<(int)graph->labellist().size()<<endl;
 	graph->update();
 }
 void Spring_Container::updategraphs()
