@@ -214,53 +214,30 @@ void Spring_Container::initgraphs()
 void Spring_Container::updategraphs()
 {
 	graph->yaxis(gmenu->value()+1);
-	graph->update();/*
 	switch(gmenu->value()){
 		case 0:
-			c1->color(FL_BLUE);
-			for(int i=0;i<500;i++){
-				c1->update(i,(double)i/50,calc.disp((float)i/50));
-			}
+			graph->color(FL_BLUE);
 			break;
 		case 1:
-			c1->color(FL_GREEN);
-			for(int i=0;i<500;i++){
-				c1->update(i,(double)i/50,calc.vel((float)i/50));
-			}
+			graph->color(FL_GREEN);
 			break;
 		case 2:
-			c1->color(FL_RED);
-			for(int i=0;i<500;i++){
-				c1->update(i,(double)i/50,calc.acc((float)i/50));
-			}
+			graph->color(FL_RED);
 			break;
 		case 3:
-			c1->color(FL_YELLOW);
-			for(int i=0;i<500;i++){
-				c1->update(i,(double)i/50,calc.acc((float)i/50)/calc.m());
-			}
+			graph->color(FL_YELLOW);
 			break;
 		case 4:
-			c1->color(FL_CYAN);
-			for(int i=0;i<500;i++){
-				c1->update(i,(double)i/50,-calc.disp((float)i/50)*calc.g()*calc.m()+calc.disp((float)i/50)*calc.disp((float)i/50)*calc.k()/2);
-			}
+			graph->color(FL_CYAN);
 			break;
 		case 5:
-			c1->color(FL_MAGENTA);
-			for(int i=0;i<500;i++){
-				c1->update(i,(double)i/50,calc.vel((float)i/50)*calc.vel((float)i/50)*calc.m()/2);
-			}
+			graph->color(FL_MAGENTA);
 			break;
 		case 6:
-			c1->color(FL_BLUE);
-			for(int i=0;i<500;i++){
-				c1->update(i,(double)i/50,-calc.disp((float)i/50)*calc.g()*calc.m()+calc.disp((float)i/50)*calc.disp((float)i/50)*calc.k()/2+calc.vel((float)i/50)*calc.vel((float)i/50)*calc.m()/2);
-			}
+			graph->color(FL_BLUE);
 			break;
 	}
-			
-	c1->redraw();*/
+	graph->update();
 }
 void Spring_Container::updatetext()
 {

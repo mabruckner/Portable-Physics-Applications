@@ -45,15 +45,19 @@ void Graph::draw()
 			glVertex3f(w()-border,border,0);
 			glVertex3f(w()-border,h()-border,0);
 			glVertex3f(border,h()-border,0);
-		glEnd();
+		glEnd();/*
+		glBegin(GL_LINES);
+			glVertex3f(w()/2,0,0);
+			glVertex3f(w()/2,h(),0);
+		glEnd();*/
 		if((int)labels.size()>xvar){
 			gl_font(fl_font(),(int)border/2);
 			//gl_draw(labels[xvar].data(),(int)labels[xvar].size(),(float)w()/2,border/2);
-			gl_draw(labels[xvar].data(),(int)border,0,w()-(int)border*2,(int)border,FL_ALIGN_CENTER);
+			gl_draw(labels[xvar].data(),0,0,w(),(int)border,FL_ALIGN_CENTER);
 			if((int)labels.size()>yvar){
 				string top=(labels[xvar]+" VS. "+labels[yvar]);
 				gl_font(fl_font(),(int)border);
-				gl_draw(top.data(),border,h()-(int)border,w()-border*2,border,FL_ALIGN_CENTER);
+				gl_draw(top.data(),0,h()-(int)border,w(),border,FL_ALIGN_CENTER);
 			}
 		}
 		glTranslatef(border,border,0);
