@@ -2,6 +2,7 @@
 #include <FL/gl.h>
 #include <FL/fl_draw.H>
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -11,7 +12,9 @@ Graph::Graph(int x,int y,int w,int h,const char* label) : Fl_Gl_Window(x,y,w,h,l
 	yvar=1;
 	connect=true;
 	orderby=0;
-	border=20;
+	border=10;
+	lborder=40;
+	bborder=20;
 }
 void Graph::draw()
 {
@@ -41,22 +44,43 @@ void Graph::draw()
 		glScalef(2.0/h(),2.0/h(),1);
 		glTranslatef(-w()/2.0,-h()/2.0,0);
 		glBegin(GL_LINE_LOOP);
-			glVertex3f(border,border,0);
-			glVertex3f(w()-border,border,0);
+			glVertex3f(lborder,bborder,0);
+			glVertex3f(w()-border,bborder,0);
 			glVertex3f(w()-border,h()-border,0);
-			glVertex3f(border,h()-border,0);
+			glVertex3f(lborder,h()-border,0);
 		glEnd();
 		if((int)labels.size()>xvar){
 			gl_font(fl_font(),(int)border/2);
 			gl_draw(labels[xvar].data(),0,0,w(),(int)border,FL_ALIGN_CENTER);
 			if((int)labels.size()>yvar){
-				string top=(labels[xvar]+" VS. "+labels[yvar]);
+				string top=(labels[yvar]+" VS. "+labels[xvar]);
 				gl_font(fl_font(),(int)border);
 				gl_draw(top.data(),0,h()-(int)border,w(),border,FL_ALIGN_CENTER);
 			}
 		}
-		glTranslatef(border,border,0);
-		glScalef((w()-border*2)/(max-mix),(h()-border*2)/(may-miy),1);
+
+
+		gl_font(fl_font(),(int)border/4);
+		stringstream s (stringstream::in|stringstream::out);
+		s.precision(2);
+		s<<mix;
+		s<<"s";
+		const char * c="";
+		string str="";
+		str=s.str();
+		gl_draw(str.data(),(int)lborder,0);
+		s.str("");
+		s<<miy;
+		str=s.str();
+		gl_draw(str.data(),0,(int)bborder);
+		s.str("");
+		s<<may;
+		str=s.str();
+		gl_draw(str.data(),0,h()-(int)border);
+
+
+		glTranslatef(lborder,bborder,0);
+		glScalef((w()-border-lborder)/(max-mix),(h()-border-bborder)/(may-miy),1);
 		glTranslatef(-mix,-miy,0);
 		gl_color(color());
 		glBegin(GL_LINE_STRIP);

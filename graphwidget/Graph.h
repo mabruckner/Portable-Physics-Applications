@@ -28,6 +28,8 @@ class Graph : public Fl_Gl_Window
 
 		void FixViewport(int w,int h);
 		float border;
+		float bborder;
+		float lborder;
 
 		void sort(int start,int end);
 	protected:

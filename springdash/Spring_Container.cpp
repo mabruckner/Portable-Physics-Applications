@@ -72,7 +72,7 @@ Spring_Container::Spring_Container(int x,int y,int w,int h,const char* label=0) 
 	v_slider->callback(Spring_Container::call,(void*)this);
 
 	g=0;
-	c1=new Line_Chart(10,h-110,170,100,"CHART");
+	//c1=new Line_Chart(10,h-110,170,100,"CHART");
 	graph=new Graph(190,h-110,w-200,100,"GRAPH");
 	graph->color(FL_BLUE);
 	gmenu=new Fl_Choice(10,h-140,170,20,"");
@@ -84,10 +84,10 @@ Spring_Container::Spring_Container(int x,int y,int w,int h,const char* label=0) 
 	gmenu->add("Kinetic Energy",0,Spring_Container::graphchanged,this,0);
 	gmenu->add("Total Energy",0,Spring_Container::graphchanged,this,0);
 	gmenu->value(0);
-	c1->type(FL_LINE_CHART);
-	//c1->autosize(1);
-	c1->rangebounds(true,-1,1);
-	c1->color(FL_BLUE);
+	//c1->type(FL_LINE_CHART);
+	///c1->autosize(1);
+	//c1->rangebounds(true,-1,1);
+	//c1->color(FL_BLUE);
 	valuechanged();
 	initgraphs();
 
@@ -170,7 +170,7 @@ void Spring_Container::timeout()
 	if(t>=10){
 		t-=10;
 	}
-	t=c1->settime(true,t);
+	//t=c1->settime(true,t);
 }
 void Spring_Container::initgraphs()
 {
