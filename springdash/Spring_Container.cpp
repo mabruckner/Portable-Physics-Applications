@@ -11,7 +11,8 @@
 #include "Spring_Container.h"
 #include "Line_Chart.h"
 
-Spring_Container::Spring_Container(int x,int y,int w,int h,const char* label=0) : Fl_Window(x,y,w,h,label)
+Spring_Container::Spring_Container(int x,int y,int w,int h,const char* label=0) : Fl_Window(x,y,w,h,label),
+graph(10,h-110,w-20,100,"GRAPH")
 {
 	menu=new Fl_Menu_Bar(0,0,w,20,"MENUBAR!");
 	menu->add("File/Export",0,Spring_Container::startexport,this,0);
@@ -73,8 +74,8 @@ Spring_Container::Spring_Container(int x,int y,int w,int h,const char* label=0) 
 
 	g=0;
 	//c1=new Line_Chart(10,h-110,170,100,"CHART");
-	graph=new Graph(190,h-110,w-200,100,"GRAPH");
-	graph->color(FL_BLUE);
+	//graph=new Graph(190,h-110,w-200,100,"GRAPH");
+	graph.color(FL_BLUE);
 	gmenu=new Fl_Choice(10,h-140,170,20,"");
 	gmenu->add("Displacement",0,Spring_Container::graphchanged,this,0);
 	gmenu->add("Velocity",0,Spring_Container::graphchanged,this,0);
@@ -174,7 +175,7 @@ void Spring_Container::timeout()
 }
 void Spring_Container::initgraphs()
 {
-	bool add=(int)graph->ptdata().size()==0;
+	bool add=(int)graph.ptdata().size()==0;
 	for(int i=0;i<500;i++){
 		//c1->add((double)i/50,calc.disp((float)i/50));
 		vector<double> pt=vector<double>();
@@ -188,9 +189,9 @@ void Spring_Container::initgraphs()
 		pt.push_back(calc.vel(t)*calc.vel(t)*calc.m()/2);
 		pt.push_back(calc.vel(t)*calc.vel(t)*calc.m()/2-calc.disp(t)*calc.g()*calc.m()+calc.disp(t)*calc.disp(t)*calc.k()/2);
 		if(add){
-			graph->add(pt);
+			graph.add(pt);
 		}else{
-			graph->set(i,pt);
+			graph.set(i,pt);
 		}
 	}
 	if(add){
@@ -203,37 +204,37 @@ void Spring_Container::initgraphs()
 		v.push_back("potential energy");
 		v.push_back("kinetic energy");
 		v.push_back("total energy");
-		graph->labellist(v);
+		graph.labellist(v);
 	}
-	graph->update();
+	graph.update();
 }
 void Spring_Container::updategraphs()
 {
-	graph->yaxis(gmenu->value()+1);
+	graph.yaxis(gmenu->value()+1);
 	switch(gmenu->value()){
 		case 0:
-			graph->color(FL_BLUE);
+			graph.color(FL_BLUE);
 			break;
 		case 1:
-			graph->color(FL_GREEN);
+			graph.color(FL_GREEN);
 			break;
 		case 2:
-			graph->color(FL_RED);
+			graph.color(FL_RED);
 			break;
 		case 3:
-			graph->color(FL_YELLOW);
+			graph.color(FL_YELLOW);
 			break;
 		case 4:
-			graph->color(FL_CYAN);
+			graph.color(FL_CYAN);
 			break;
 		case 5:
-			graph->color(FL_MAGENTA);
+			graph.color(FL_MAGENTA);
 			break;
 		case 6:
-			graph->color(FL_BLUE);
+			graph.color(FL_BLUE);
 			break;
 	}
-	graph->update();
+	graph.update();
 }
 void Spring_Container::updatetext()
 {

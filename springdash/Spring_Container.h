@@ -69,8 +69,7 @@ class Spring_Container : public Fl_Window
 
 		Fl_Menu_Bar* menu;
 
-		Line_Chart* c1;
-		Graph* graph;
+		Graph graph;
 
 
 		Fl_Multiline_Output* o_text;

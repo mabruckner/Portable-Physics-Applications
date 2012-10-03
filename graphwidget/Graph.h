@@ -26,12 +26,20 @@ class Graph : public Fl_Gl_Window
 		double mousex;
 		double mousey;
 
+		//double xmin;
+		//double xmax;
+		//double ymin;
+		//double ymax;
+
 		void FixViewport(int w,int h);
 		float border;
 		float bborder;
 		float lborder;
 
 		void sort(int start,int end);
+
+		void xlabel(double val,double bar);
+		void ylabel(double val,double bar);
 	protected:
 		void draw();
 	public:

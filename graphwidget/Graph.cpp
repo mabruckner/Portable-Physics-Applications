@@ -15,6 +15,10 @@ Graph::Graph(int x,int y,int w,int h,const char* label) : Fl_Gl_Window(x,y,w,h,l
 	border=10;
 	lborder=40;
 	bborder=20;
+	//xmin=0;
+	//xmax=0;
+	//miy=0;
+	//ymax=0
 }
 void Graph::draw()
 {
@@ -65,10 +69,13 @@ void Graph::draw()
 		s.precision(2);
 		s<<mix;
 		s<<"s";
-		const char * c="";
 		string str="";
 		str=s.str();
 		gl_draw(str.data(),(int)lborder,0);
+		s.str("");
+		s<<max;
+		str=s.str();
+		gl_draw(str.data(),w()-(int)border,0);
 		s.str("");
 		s<<miy;
 		str=s.str();
@@ -82,6 +89,9 @@ void Graph::draw()
 		glTranslatef(lborder,bborder,0);
 		glScalef((w()-border-lborder)/(max-mix),(h()-border-bborder)/(may-miy),1);
 		glTranslatef(-mix,-miy,0);
+		xlabel(mix,miy);
+		xlabel(max,miy);
+		xlabel(5,miy);
 		gl_color(color());
 		glBegin(GL_LINE_STRIP);
 		for(int i=0;i<(int)ordered.size();i++){
@@ -149,4 +159,16 @@ void Graph::sort(int start,int end)
 	}
 	sort(start,pivot-1);
 	sort(pivot+1,end);
+}
+void Graph::xlabel(double val,double bar)
+{
+	stringstream s (stringstream::in|stringstream::out);
+	s.precision(4);
+	s<<val;
+	if((int)units.size()>xvar){
+		s<<units[xvar];
+	}
+	string str="";
+	str=s.str();
+	gl_draw(str.data(),(float)(val),(float)(bar));
 }
