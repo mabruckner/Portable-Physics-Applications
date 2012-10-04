@@ -4,13 +4,13 @@
 
 using namespace std;
 
-typedef float pfloat;
+typedef double pfloat;
 
 class Point
 {
 	public:
 		Point(){
-			mass = 10;
+			weight=0;
 		};
 		~Point(){};
 
@@ -26,6 +26,6 @@ class Point
 		vector<pfloat> yacc;
 		vector<pfloat> zacc;
 
-		pfloat mass;
+		pfloat weight;
 };
 #endif
