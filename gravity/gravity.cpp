@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cmath>
 
+#include <GL/glew.h>
 #include <GL/glut.h>
 
 #include "Algorithms.h"
@@ -45,45 +46,141 @@ void accvect(pfloat* ax,pfloat* ay,pfloat* az,pfloat x,pfloat y,pfloat z)
 
 pfloat accmag(pfloat x,pfloat y,pfloat z)
 {
-	pfloat a,b,c;cout<<a<<","<<b<<","<<c<<endl;
-	accvect(&a,&b,&c,x,y,z);cout<<a<<","<<b<<","<<c<<endl;
+	pfloat a,b,c;//cout<<a<<","<<b<<","<<c<<endl;
+	accvect(&a,&b,&c,x,y,z);//cout<<a<<","<<b<<","<<c<<endl;
 	return dist(a,b,c,0,0,0);
+}
+
+void resize(int w,int h)
+{
+	if(w==0){
+		w=1;
+	}
+	float ratio=(float)h/w;
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glViewport(0,0,w,h);
+	glFrustum(-5,5,-ratio*5,ratio*5,5,100);
+	glTranslatef(0,0,-20);
+	glRotatef(-90,1,0,0);
 }
 
 void redraw(void)
 {
 	glClearColor(0.0,0.0,0.0,1.0);
+	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glBegin(GL_TRIANGLES);
+	/*glBegin(GL_TRIANGLES);
 		glColor3f(1.0,0.0,1.0);
 		glVertex3f(5.0,0.0,0.0);
 		glVertex3f(0.0,5.0,0.0);
 		glVertex3f(0.0,0.0,5.0);
+	glEnd();*/
+	glColor3f(0.0,.5,1.0);
+	for(int i=0;i<(int)list.size();i++){
+		Point* p=&list[i];
+		int n=(int)p->xpos.size()-1;
+		float r=sqrt(p->weight);
+		glPushMatrix();
+		glTranslatef(p->xpos[n],p->ypos[n],p->zpos[n]);
+		glutSolidSphere(r,8,16);
+		glPopMatrix();
+	}
+	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+	glColor3f(1.0,1.0,1.0);
+	glBegin(GL_QUADS);
+		float s=.125;
+		float max=2.5;
+		for(float i=-10;i<10;i+=s){
+			for(float j=-10;j<10;j+=s){
+				float a1=(float)accmag((pfloat)i,(pfloat)j,0);
+				float a2=(float)accmag((pfloat)i+s,(pfloat)j,0);
+				float a3=(float)accmag((pfloat)i+s,(pfloat)j+s,0);
+				float a4=(float)accmag((pfloat)i,(pfloat)j+s,0);
+				if(a1>max||a2>max||a3>max||a4>max){
+					continue;
+				}
+				glColor3f(a1/2.0,1.0,1.0-a1/2.0);
+				glVertex3f((float)i,(float)j,-a1*5);
+				glColor3f(a2/2.0,1.0,1.0-a2/2.0);
+				glVertex3f((float)i+s,(float)j,-a2*5);
+				glColor3f(a3/2.0,1.0,1.0-a3/2.0);
+				glVertex3f((float)i+s,(float)j+s,-a3*5);
+				glColor3f(a4/2.0,1.0,1.0-a4/2.0);
+				glVertex3f((float)i,(float)j+s,-a4*5);
+			}
+		}
 	glEnd();
-	glutSolidSphere(5,16,16);
 	glutSwapBuffers();
+}
+
+void step(void)
+{
+	list[0].xpos[0]+=.01;
+	redraw();
 }
 
 int main(int argc, char** argv)
 {
 	list=vector<Point>();
 	G=10;
-	Point p;
-	p.xpos.push_back(0);
-	p.ypos.push_back(0);
-	p.zpos.push_back(0);
-	list.push_back(p);
-	euler(&p,10,10,10,1);cout<<"HELLO WORLD?"<<endl;
-	cout<<accmag(1,1,1)<<endl;cout<<(int)list.size()<<endl;
+	Point a;
+	a.xpos.push_back(0);
+	a.ypos.push_back(0);
+	a.zpos.push_back(0);
+	a.weight=5;
+	list.push_back(a);
+	Point b;
+	b.xpos.push_back(-5);
+	b.ypos.push_back(-5);
+	b.zpos.push_back(0);
+	b.weight=1;
+	list.push_back(b);
+	euler(&b,10,10,10,1);cout<<"HELLO WORLD?"<<endl;
+	cout<<accmag(1,1,0)<<endl;cout<<(int)list.size()<<endl;
 
 
 	glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutCreateWindow("HELLO WORLD");
+	GLenum err=glewInit();
+	if(err!=GLEW_OK){
+		cout<<"ERROR: "<<glewGetErrorString(err)<<endl;
+		return 0;
+	}
+	/*if (glewIsSupported("GL_VERSION_3_3"))
+		cout<<"Ready for OpenGL 3.3\n";
+	else {
+		cout<<"OpenGL 3.3 not supported\n";
+		exit(1);
+	}*/
+
 	glutDisplayFunc(redraw);
+	glutIdleFunc(step);
+	glutReshapeFunc(resize);
+	glEnable(GL_DEPTH_TEST);
+	cout<<glGetString(GL_VERSION)<<endl;
+cout<<"HELLO"<<endl;
+	GLuint v=glCreateShader(GL_VERTEX_SHADER);
+	GLuint f=glCreateShader(GL_FRAGMENT_SHADER);
+	const char* textV="varying vec3 normal;\nvoid main(){normal=gl_NormalMatrix * gl_Normal;gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;gl_FrontColor=gl_Color;}";
+	const char* textF="varying vec3 normal;\nvoid main(){gl_FragColor =clamp(dot(normal,vec3(1.0,0.0,0.0)),0.05,0.99)*gl_Color;}";
+	glShaderSource(v,1,&textV,NULL);
+	glShaderSource(f,1,&textF,NULL);
+	glCompileShader(v);
+	glCompileShader(f);
+	GLuint p=glCreateProgram();
+	glAttachShader(p,v);
+	glAttachShader(p,f);
+	glLinkProgram(p);
+	glUseProgram(p);
+cout<<"GOODBYE"<<endl;
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-10,10,-10,10,-10,10);
+	glFrustum(-5,5,-5,5,5,100);
+	glTranslatef(0,0,-20);
+	glRotatef(-90,1,0,0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glutMainLoop();
