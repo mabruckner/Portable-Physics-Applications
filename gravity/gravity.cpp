@@ -116,6 +116,12 @@ void redraw(void)
 
 void step(void)
 {
+	pfloat xf[(int)list.size()];
+	pfloat yf[(int)list.size()];
+	pfloat zf[(int)list.size()];
+	for(int i=0;i<(int)list.size();i++){
+		
+	}
 	list[0].xpos[0]+=.01;
 	redraw();
 }
@@ -125,15 +131,11 @@ int main(int argc, char** argv)
 	list=vector<Point>();
 	G=10;
 	Point a;
-	a.xpos.push_back(0);
-	a.ypos.push_back(0);
-	a.zpos.push_back(0);
 	a.weight=5;
 	list.push_back(a);
 	Point b;
-	b.xpos.push_back(-5);
-	b.ypos.push_back(-5);
-	b.zpos.push_back(0);
+	b.xpos[0]=-5;
+	b.ypos[0]=-5;
 	b.weight=1;
 	list.push_back(b);
 	euler(&b,10,10,10,1);cout<<"HELLO WORLD?"<<endl;
