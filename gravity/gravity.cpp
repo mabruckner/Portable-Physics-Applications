@@ -17,6 +17,8 @@ pfloat tratio;
 
 pfloat G;
 
+int timeindex;
+
 pfloat dist(pfloat x1,pfloat y1,pfloat z1,pfloat x2,pfloat y2,pfloat z2)
 {
 	return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)+(z1-z2)*(z1-z2));
@@ -31,7 +33,7 @@ void accvect(pfloat* ax,pfloat* ay,pfloat* az,pfloat x,pfloat y,pfloat z)
 		Point* p=&list[i];
 		int n=(int)p->xpos.size()-1;
 		pfloat d=dist(x,y,z,p->xpos[n],p->ypos[n],p->zpos[n]);
-		if(d==0){
+		if(abs(d)<=.1){
 			continue;
 		}
 		pfloat mag=G*p->weight/(d*d);
@@ -62,7 +64,7 @@ void resize(int w,int h)
 	glViewport(0,0,w,h);
 	glFrustum(-5,5,-ratio*5,ratio*5,5,100);
 	glTranslatef(0,0,-20);
-	glRotatef(-90,1,0,0);
+	glRotatef(-5,1,0,0);
 }
 
 void redraw(void)
@@ -83,14 +85,14 @@ void redraw(void)
 		float r=sqrt(p->weight);
 		glPushMatrix();
 		glTranslatef(p->xpos[n],p->ypos[n],p->zpos[n]);
-		glutSolidSphere(r,8,16);
+		glutSolidSphere(r,16,16);
 		glPopMatrix();
 	}
 	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 	glColor3f(1.0,1.0,1.0);
 	glBegin(GL_QUADS);
 		float s=.125;
-		float max=2.5;
+		float max=5;
 		for(float i=-10;i<10;i+=s){
 			for(float j=-10;j<10;j+=s){
 				float a1=(float)accmag((pfloat)i,(pfloat)j,0);
@@ -120,9 +122,12 @@ void step(void)
 	pfloat yf[(int)list.size()];
 	pfloat zf[(int)list.size()];
 	for(int i=0;i<(int)list.size();i++){
-		
+		accvect(xf+i,yf+i,zf+i,list[i].xpos[timeindex],list[i].ypos[timeindex],list[i].zpos[timeindex]);
+	}//cout<<xf[0]<<","<<yf[0]<<","<<zf[0]<<" - "<<list[1].xpos[timeindex]<<endl;
+	for(int i=0;i<(int)list.size();i++){
+		euler(&(list[i]),xf[i],yf[i],zf[i],.01);
 	}
-	list[0].xpos[0]+=.01;
+	timeindex++;
 	redraw();
 }
 
@@ -131,11 +136,22 @@ int main(int argc, char** argv)
 	list=vector<Point>();
 	G=10;
 	Point a;
+	Point pt;pt.xacc[0]=1;
+	for(int i=0;i<100;i++){
+	euler(&pt,1,0,0,1);
+	cout<<pt.xpos[i]<<endl;
+	}
+	
+	timeindex=0;
 	a.weight=5;
+	a.xvel[0]=.4;
+	a.yvel[0]=-.4;
 	list.push_back(a);
 	Point b;
 	b.xpos[0]=-5;
 	b.ypos[0]=-5;
+	b.xvel[0]=-2;
+	b.yvel[0]=2;
 	b.weight=1;
 	list.push_back(b);
 	euler(&b,10,10,10,1);cout<<"HELLO WORLD?"<<endl;
@@ -166,7 +182,7 @@ cout<<"HELLO"<<endl;
 	GLuint v=glCreateShader(GL_VERTEX_SHADER);
 	GLuint f=glCreateShader(GL_FRAGMENT_SHADER);
 	const char* textV="varying vec3 normal;\nvoid main(){normal=gl_NormalMatrix * gl_Normal;gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;gl_FrontColor=gl_Color;}";
-	const char* textF="varying vec3 normal;\nvoid main(){gl_FragColor =clamp(dot(normal,vec3(1.0,0.0,0.0)),0.05,0.99)*gl_Color;}";
+	const char* textF="varying vec3 normal;\nvoid main(){gl_FragColor =clamp(dot(normal,vec3(0.7071,-0.7071,0.0)),0.01,0.99)*gl_Color;}";
 	glShaderSource(v,1,&textV,NULL);
 	glShaderSource(f,1,&textF,NULL);
 	glCompileShader(v);
