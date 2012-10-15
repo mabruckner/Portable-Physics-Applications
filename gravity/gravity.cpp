@@ -31,15 +31,14 @@ void accvect(pfloat* ax,pfloat* ay,pfloat* az,pfloat x,pfloat y,pfloat z)
 	pfloat oz=0.0;
 	for(int i=0;i<(int)list.size();i++){
 		Point* p=&list[i];
-		int n=(int)p->xpos.size()-1;
-		pfloat d=dist(x,y,z,p->xpos[n],p->ypos[n],p->zpos[n]);
+		pfloat d=dist(x,y,z,p->xpos->data,p->ypos->data,p->zpos->data);
 		if(abs(d)<=.1){
 			continue;
 		}
 		pfloat mag=G*p->weight/(d*d);
-		ox+=mag*(p->xpos[n]-x)/d;
-		oy+=mag*(p->ypos[n]-y)/d;
-		oz+=mag*(p->zpos[n]-z)/d;
+		ox+=mag*(p->xpos->data-x)/d;
+		oy+=mag*(p->ypos->data-y)/d;
+		oz+=mag*(p->zpos->data-z)/d;
 	}
 	*ax=ox;
 	*ay=oy;
@@ -81,18 +80,22 @@ void redraw(void)
 	glColor3f(0.0,.5,1.0);
 	for(int i=0;i<(int)list.size();i++){
 		Point* p=&list[i];
-		int n=(int)p->xpos.size()-1;
 		float r=sqrt(p->weight);
 		glPushMatrix();
-		glTranslatef(p->xpos[n],p->ypos[n],p->zpos[n]);
-		glutSolidSphere(r,16,16);
+		glTranslatef(p->xpos->data,p->ypos->data,p->zpos->data);
+		glutSolidSphere(r,32,16);
 		glPopMatrix();
 	}
 	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 	glColor3f(1.0,1.0,1.0);
+	glBegin(GL_LINE_STRIP);
+		for(int i=0;i<timeindex;i++){
+			glVertex3f(0,0,0);
+		}
+	glEnd();
 	glBegin(GL_QUADS);
 		float s=.125;
-		float max=5;
+		float max=20;
 		for(float i=-10;i<10;i+=s){
 			for(float j=-10;j<10;j+=s){
 				float a1=(float)accmag((pfloat)i,(pfloat)j,0);
@@ -122,7 +125,7 @@ void step(void)
 	pfloat yf[(int)list.size()];
 	pfloat zf[(int)list.size()];
 	for(int i=0;i<(int)list.size();i++){
-		accvect(xf+i,yf+i,zf+i,list[i].xpos[timeindex],list[i].ypos[timeindex],list[i].zpos[timeindex]);
+		accvect(xf+i,yf+i,zf+i,list[i].xpos->data,list[i].ypos->data,list[i].zpos->data);
 	}//cout<<xf[0]<<","<<yf[0]<<","<<zf[0]<<" - "<<list[1].xpos[timeindex]<<endl;
 	for(int i=0;i<(int)list.size();i++){
 		euler(&(list[i]),xf[i],yf[i],zf[i],.01);
@@ -133,25 +136,23 @@ void step(void)
 
 int main(int argc, char** argv)
 {
+	timeindex=0;
+
+	cout<<"RDATA"<<sizeof(rdata)<<endl;
+
 	list=vector<Point>();
 	G=10;
+
 	Point a;
-	Point pt;pt.xacc[0]=1;
-	for(int i=0;i<100;i++){
-	euler(&pt,1,0,0,1);
-	cout<<pt.xpos[i]<<endl;
-	}
-	
-	timeindex=0;
 	a.weight=5;
-	a.xvel[0]=.4;
-	a.yvel[0]=-.4;
+	a.xvel->data=.4;
+	a.yvel->data=-.4;
 	list.push_back(a);
 	Point b;
-	b.xpos[0]=-5;
-	b.ypos[0]=-5;
-	b.xvel[0]=-2;
-	b.yvel[0]=2;
+	b.xpos->data=-5;
+	b.ypos->data=-5;
+	b.xvel->data=-2;
+	b.yvel->data=2;
 	b.weight=1;
 	list.push_back(b);
 	euler(&b,10,10,10,1);cout<<"HELLO WORLD?"<<endl;
