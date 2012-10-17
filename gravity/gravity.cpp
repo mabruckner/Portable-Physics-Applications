@@ -63,7 +63,7 @@ void resize(int w,int h)
 	glViewport(0,0,w,h);
 	glFrustum(-5,5,-ratio*5,ratio*5,5,100);
 	glTranslatef(0,0,-20);
-	glRotatef(-5,1,0,0);
+	glRotatef(-45,1,0,0);
 }
 
 void redraw(void)
@@ -78,13 +78,20 @@ void redraw(void)
 		glVertex3f(0.0,0.0,5.0);
 	glEnd();*/
 	glColor3f(0.0,.5,1.0);
+	glColor3f(1.0,1.0,1.0);
 	for(int i=0;i<(int)list.size();i++){
 		Point* p=&list[i];
-		float r=sqrt(p->weight);
+		float r=.1*sqrt(p->weight);
 		glPushMatrix();
 		glTranslatef(p->xpos->data,p->ypos->data,p->zpos->data);
 		glutSolidSphere(r,32,16);
 		glPopMatrix();
+		glBegin(GL_LINE_STRIP);
+			rdata* xd=p->xpos;
+			rdata* yd=p->ypos;
+			rdata* zd=p->zpos;
+			while((xd=xd->back)!=p->xpos&&(yd=yd->back)!=p->ypos&&(zd=zd->back)!=p->zpos)glVertex3f(xd->data,yd->data,zd->data);
+		glEnd();
 	}
 	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 	glColor3f(1.0,1.0,1.0);
@@ -94,10 +101,10 @@ void redraw(void)
 		}
 	glEnd();
 	glBegin(GL_QUADS);
-		float s=.125;
+		float s=.25;
 		float max=20;
-		for(float i=-10;i<10;i+=s){
-			for(float j=-10;j<10;j+=s){
+		for(float i=-20;i<20;i+=s){
+			for(float j=-20;j<20;j+=s){
 				float a1=(float)accmag((pfloat)i,(pfloat)j,0);
 				float a2=(float)accmag((pfloat)i+s,(pfloat)j,0);
 				float a3=(float)accmag((pfloat)i+s,(pfloat)j+s,0);
@@ -121,17 +128,23 @@ void redraw(void)
 
 void step(void)
 {
-	pfloat xf[(int)list.size()];
+/*	pfloat xf[(int)list.size()];
 	pfloat yf[(int)list.size()];
 	pfloat zf[(int)list.size()];
 	for(int i=0;i<(int)list.size();i++){
 		accvect(xf+i,yf+i,zf+i,list[i].xpos->data,list[i].ypos->data,list[i].zpos->data);
 	}//cout<<xf[0]<<","<<yf[0]<<","<<zf[0]<<" - "<<list[1].xpos[timeindex]<<endl;
 	for(int i=0;i<(int)list.size();i++){
-		euler(&(list[i]),xf[i],yf[i],zf[i],.01);
+		euler(&(list[i]),xf[i],yf[i],zf[i],.1);
 	}
-	timeindex++;
+	timeindex++;*/
+	vertlet_integration(&list,accvect,.1);
 	redraw();
+}
+
+void processNormalKeys(unsigned char key,int x,int y)
+{
+	if(key==27)exit(0);
 }
 
 int main(int argc, char** argv)
@@ -145,23 +158,33 @@ int main(int argc, char** argv)
 
 	Point a;
 	a.weight=5;
+	a.xpos->data=.04;
+	a.ypos->data=-.04;
 	a.xvel->data=.4;
 	a.yvel->data=-.4;
 	list.push_back(a);
 	Point b;
-	b.xpos->data=-5;
-	b.ypos->data=-5;
-	b.xvel->data=-2;
-	b.yvel->data=2;
+	b.xpos->data=-5.2;
+	b.ypos->data=-4.8;
+	b.xpos->back->data=-5;
+	b.ypos->back->data=-5;
+	b.xvel->data=-.2;
+	b.yvel->data=.2;
 	b.weight=1;
 	list.push_back(b);
-	euler(&b,10,10,10,1);cout<<"HELLO WORLD?"<<endl;
+	//Point c;
+	//c.weight=2;
+	//c.xpos->data=30;
+	//c.xpos->back->data=29.99;
+	//list.push_back(c);
+	//euler(&b,10,10,10,1);cout<<"HELLO WORLD?"<<endl;
 	cout<<accmag(1,1,0)<<endl;cout<<(int)list.size()<<endl;
 
 
 	glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutCreateWindow("HELLO WORLD");
+	glutFullScreen();
 	GLenum err=glewInit();
 	if(err!=GLEW_OK){
 		cout<<"ERROR: "<<glewGetErrorString(err)<<endl;
@@ -177,6 +200,7 @@ int main(int argc, char** argv)
 	glutDisplayFunc(redraw);
 	glutIdleFunc(step);
 	glutReshapeFunc(resize);
+	glutKeyboardFunc(processNormalKeys);
 	glEnable(GL_DEPTH_TEST);
 	cout<<glGetString(GL_VERSION)<<endl;
 cout<<"HELLO"<<endl;

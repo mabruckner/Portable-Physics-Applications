@@ -1,7 +1,7 @@
 #ifndef POINT_H
 #define POINT_H
 
-#define RING_SIZE 256
+#define RING_SIZE 1024
 
 #include <vector>
 
