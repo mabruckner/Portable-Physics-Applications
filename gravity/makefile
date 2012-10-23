@@ -2,6 +2,9 @@ gravity: gravity.o Algorithms.o Point.o
 	g++ -Wall -g $^ -lGL -lglut -lGLEW -o $@
 	./gravity
 
+gtk: gtktest.c
+	gcc -Wall -g $< -o $@
+
 gravity.o: gravity.cpp Point.h Algorithms.h
 	g++ -Wall -g -c $< -lGL -lglut -lGLEW -o $@
 

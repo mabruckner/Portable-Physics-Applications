@@ -138,7 +138,8 @@ void step(void)
 		euler(&(list[i]),xf[i],yf[i],zf[i],.1);
 	}
 	timeindex++;*/
-	vertlet_integration(&list,accvect,.1);
+	for(int i=0;i<4;i++)
+vertlet_integration(&list,accvect,.05);
 	redraw();
 }
 
@@ -146,7 +147,9 @@ void processNormalKeys(unsigned char key,int x,int y)
 {
 	if(key==27)exit(0);
 }
-
+void menufunc(int num){
+	cout<<"MENU : "<<num<<endl;
+}
 int main(int argc, char** argv)
 {
 	timeindex=0;
@@ -158,33 +161,48 @@ int main(int argc, char** argv)
 
 	Point a;
 	a.weight=5;
+	/*
 	a.xpos->data=.04;
 	a.ypos->data=-.04;
+	*/
 	a.xvel->data=.4;
 	a.yvel->data=-.4;
 	list.push_back(a);
 	Point b;
+/*
 	b.xpos->data=-5.2;
 	b.ypos->data=-4.8;
 	b.xpos->back->data=-5;
 	b.ypos->back->data=-5;
-	b.xvel->data=-.2;
-	b.yvel->data=.2;
+*/
+	b.xpos->data=-5;
+	b.ypos->data=-5;
+	b.xvel->data=-2;
+	b.yvel->data=2;
 	b.weight=1;
 	list.push_back(b);
-	//Point c;
-	//c.weight=2;
-	//c.xpos->data=30;
+	//euler(&list,accvect,.1);
+	Point c;
+	c.weight=.2;
+	c.xpos->data=-6;
+	c.ypos->data=-6;
 	//c.xpos->back->data=29.99;
-	//list.push_back(c);
+	list.push_back(c);
+
+	/*Point d;
+	d.xpos->data=10;
+	d.weight=.5;
+	d.yvel->data=-2.5;
+	list.push_back(d);*/
 	//euler(&b,10,10,10,1);cout<<"HELLO WORLD?"<<endl;
-	cout<<accmag(1,1,0)<<endl;cout<<(int)list.size()<<endl;
+	//cout<<accmag(1,1,0)<<endl;cout<<(int)list.size()<<endl;
+	euler(&list,accvect,.05);
 
 
 	glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutCreateWindow("HELLO WORLD");
-	glutFullScreen();
+	//glutFullScreen();
 	GLenum err=glewInit();
 	if(err!=GLEW_OK){
 		cout<<"ERROR: "<<glewGetErrorString(err)<<endl;
@@ -201,6 +219,13 @@ int main(int argc, char** argv)
 	glutIdleFunc(step);
 	glutReshapeFunc(resize);
 	glutKeyboardFunc(processNormalKeys);
+
+
+	glutCreateMenu(menufunc);
+	glutAddMenuEntry("pause",0);
+	glutAttachMenu(GLUT_LEFT_BUTTON);
+
+
 	glEnable(GL_DEPTH_TEST);
 	cout<<glGetString(GL_VERSION)<<endl;
 cout<<"HELLO"<<endl;
