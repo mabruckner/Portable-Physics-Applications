@@ -3,7 +3,7 @@ gravity: gravity.o Algorithms.o Point.o
 	./gravity
 
 gtk: gtktest.c
-	gcc -Wall -g $< -o $@
+	gcc -Wall -g $< `pkg-config --cflags --libs gtk+-3.0` -o $@ 
 
 gravity.o: gravity.cpp Point.h Algorithms.h
 	g++ -Wall -g -c $< -lGL -lglut -lGLEW -o $@
