@@ -228,7 +228,6 @@ int main(int argc, char** argv)
 
 	glEnable(GL_DEPTH_TEST);
 	cout<<glGetString(GL_VERSION)<<endl;
-cout<<"HELLO"<<endl;
 	GLuint v=glCreateShader(GL_VERTEX_SHADER);
 	GLuint f=glCreateShader(GL_FRAGMENT_SHADER);
 	const char* textV="varying vec3 normal;\nvoid main(){normal=gl_NormalMatrix * gl_Normal;gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;gl_FrontColor=gl_Color;}";
@@ -242,8 +241,6 @@ cout<<"HELLO"<<endl;
 	glAttachShader(p,f);
 	glLinkProgram(p);
 	glUseProgram(p);
-cout<<"GOODBYE"<<endl;
-
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glFrustum(-5,5,-5,5,5,100);
