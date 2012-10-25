@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include "Point.c"
 
 static void print_hello(GtkWidget *widget,gpointer data)
 {
@@ -10,6 +11,9 @@ int main(int argc,char** argv)
 {
 	GtkWidget *window;
 	GtkWidget *button;
+
+	Point p;
+	init_point(&p);
 
 	gtk_init(&argc,&argv);
 
