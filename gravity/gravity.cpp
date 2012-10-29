@@ -138,7 +138,7 @@ void step(void)
 		euler(&(list[i]),xf[i],yf[i],zf[i],.1);
 	}
 	timeindex++;*/
-	for(int i=0;i<4;i++)
+	//for(int i=0;i<4;i++)
 vertlet_integration(&list,accvect,.05);
 	redraw();
 }
@@ -202,7 +202,7 @@ int main(int argc, char** argv)
 	glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutCreateWindow("HELLO WORLD");
-	//glutFullScreen();
+	glutFullScreen();
 	GLenum err=glewInit();
 	if(err!=GLEW_OK){
 		cout<<"ERROR: "<<glewGetErrorString(err)<<endl;
