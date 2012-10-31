@@ -1,11 +1,12 @@
 #include "Algorithms.h"
 #include "Point.h"
 
-void vertlet_integration(vector<Point>* list,void afunc(pfloat* ax,pfloat* ay,pfloat* az,pfloat x,pfloat y,pfloat z),pfloat delta)
+void vertlet_integration(Point* list,int num,void afunc(pfloat* ax,pfloat* ay,pfloat* az,pfloat x,pfloat y,pfloat z),pfloat delta)
 {
 	pfloat dt2=delta*delta;
-	for(int i=0;i<(int)list->size();i++){
-		Point* pt=&(list->at(i));
+	int i=0;
+	for(i=0;i<(int)num;i++){
+		Point* pt=(list+i);
 		pfloat ax=0.0;
 		pfloat ay=0.0;
 		pfloat az=0.0;
@@ -14,19 +15,20 @@ void vertlet_integration(vector<Point>* list,void afunc(pfloat* ax,pfloat* ay,pf
 		pt->ypos->front->data=2*pt->ypos->data-pt->ypos->back->data+ay*dt2;
 		pt->zpos->front->data=2*pt->zpos->data-pt->zpos->back->data+az*dt2;
 	}
-	for(int i=0;i<(int)list->size();i++){
-		list->at(i).advance();
+	for(i=0;i<(int)num;i++){
+		advance(list+i);
 	}
 }
-void improved_euler(vector<Point>* list,void ffunc(vector<Point>* list,pfloat x,pfloat y,pfloat z),pfloat delta)
+/*void improved_euler(vector<Point>* list,void ffunc(vector<Point>* list,pfloat x,pfloat y,pfloat z),pfloat delta)
 {
 
-}
-void euler(vector<Point>* list,void afunc(pfloat* ax,pfloat* ay,pfloat* az,pfloat x,pfloat y,pfloat z),pfloat delta)
+}*/
+void euler(Point* list,int num,void afunc(pfloat* ax,pfloat* ay,pfloat* az,pfloat x,pfloat y,pfloat z),pfloat delta)
 {
-	for(int i=0;i<(int)list->size();i++)
+	int i=0;
+	for(i=0;i<(int)num;i++)
 	{
-		Point* pt=&(list->at(i));
+		Point* pt=(list+i);
 		pfloat xf=0.0;
 		pfloat yf=0.0;
 		pfloat zf=0.0;
@@ -43,11 +45,11 @@ void euler(vector<Point>* list,void afunc(pfloat* ax,pfloat* ay,pfloat* az,pfloa
 		pt->ypos->front->data=pt->ypos->data+delta*(pt->yvel->data+pt->yvel->front->data)/2;
 		pt->zpos->front->data=pt->zpos->data+delta*(pt->zvel->data+pt->zvel->front->data)/2;
 	}
-	for(int i=0;i<(int)list->size();i++){
-		list->at(i).advance();
+	for(i=0;i<(int)num;i++){
+		advance(list+i);
 	}
 }
-void euler(Point* pt,pfloat xf,pfloat yf,pfloat zf,pfloat delta)
+/*void euler(Point* pt,pfloat xf,pfloat yf,pfloat zf,pfloat delta)
 {
 	pt->advance();
 	pt->xacc->data=xf;
@@ -61,4 +63,4 @@ void euler(Point* pt,pfloat xf,pfloat yf,pfloat zf,pfloat delta)
 	pt->xpos->data=pt->xpos->back->data+delta*(pt->xvel->back->data+pt->xvel->data)/2;
 	pt->ypos->data=pt->ypos->back->data+delta*(pt->yvel->back->data+pt->yvel->data)/2;
 	pt->zpos->data=pt->zpos->back->data+delta*(pt->zvel->back->data+pt->zvel->data)/2;
-}
+}*/

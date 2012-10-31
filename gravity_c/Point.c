@@ -11,7 +11,8 @@ static rdata* init(rdata n_store[RING_SIZE],pfloat start)
 }
 void init_point(Point *p)
 {
-	p->weight=0;
+	p->mass=0;
+	p->charge=0;
 	p->xpos=init(p->xpos_store,0.0);
 	p->ypos=init(p->ypos_store,0.0);
 	p->zpos=init(p->zpos_store,0.0);

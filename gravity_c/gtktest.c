@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include <gdk/gdkgl.h>
 #include "Point.h"
 
 static void print_hello(GtkWidget *widget,gpointer data)
@@ -16,6 +17,7 @@ int main(int argc,char** argv)
 	init_point(&p);
 
 	gtk_init(&argc,&argv);
+	gdk_gl_init(&argc,&argv);
 
 	window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window),"HELLO WORLD");

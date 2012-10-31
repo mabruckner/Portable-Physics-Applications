@@ -1,9 +1,11 @@
 #ifndef POINT_H
 #define POINT_H
-
+#define MAX_POINTS 128
 #define RING_SIZE 64
 
+
 typedef double pfloat;
+
 
 struct rdata_struct
 {
@@ -24,7 +26,8 @@ struct Point_struct
 	rdata* yacc;
 	rdata* zacc;
 
-	pfloat weight;
+	pfloat mass;
+	pfloat charge;
 
 	rdata xpos_store[RING_SIZE];
 	rdata ypos_store[RING_SIZE];
