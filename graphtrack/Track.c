@@ -37,7 +37,7 @@ State* calc(Track* track,float interval,int num)
 			int place=(int)(cstate.pos/track->spaces);
 			if(cstate.pos/track->spaces==place)place--;
 			if(place<0||place>track->nheights-1){ctime=gtime;break;}
-			float acc=track->g*track->spaces/(track->heights[place]-track->heights[place+1]);
+			float acc=track->g*track->spaces*(track->heights[place]-track->heights[place+1])/(track->spaces*track->spaces+(track->heights[place]-track->heights[place+1])*(track->heights[place]-track->heights[place+1]));
 			printf("%f:%f\n",ctime,acc);
 			float a=acc/2.0;
 			float b=cstate.vel;

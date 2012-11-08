@@ -5,12 +5,12 @@
 int main(int argv, char** argc)
 {
 	Track track;
-	float heights[5]={0.0,5.0,4.0,6.0,12.0};
+	float heights[5]={0.0,6.0,4.0,6.0,12.0};
 	track.heights=heights;
 	track.nheights=5;
 	track.spaces=1.0;
 	State init;
-	init.pos=3.5;
+	init.pos=2.5;
 	init.vel=0.0;
 	track.init=init;
 	track.g=10.0;
