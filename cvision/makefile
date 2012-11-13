@@ -6,5 +6,5 @@ CircuitVision.o: CircuitVision.c Circuit.h
 
 Circuit.o: Circuit.c Circuit.h CircuitFunc.h
 	gcc -Wall -g -c $< -o $@
-UI.o: UI.c UI.h builder.ui
+UI.o: UI.c UI.h
 	gcc -Wall -g -c $< `pkg-config --cflags gtk+-3.0` -o $@
