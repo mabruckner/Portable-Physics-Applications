@@ -1,6 +1,9 @@
+#ifndef CIRCUIT_H
+#define CIRCUIT_H
 //current is from A to B
-#include <gsl/gsl_linalg.h>
-
+#define WIRE 0
+#define BATTERY 1
+#define RESISTOR 2
 typedef struct
 {
 	char type;
@@ -22,5 +25,6 @@ typedef struct
 	int ccount;
 	int vcount;
 } Circuit;
-void to_matrix(Circuit * c,gsl_matrix** A,gsl_vector** b);
-void print_matrix(gsl_matrix* m);
+int update_circuit(Circuit * c);
+
+#endif

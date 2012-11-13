@@ -3,8 +3,9 @@
 #include <gsl/gsl_linalg.h>
 
 #include "Circuit.h"
+#include "CircuitFunc.h"
 
-gsl_vector * solve(gsl_matrix* A,gsl_vector* b)
+/*gsl_vector * solve(gsl_matrix* A,gsl_vector* b)
 {
 	printf("A =\n");
 	print_matrix(A);
@@ -24,11 +25,11 @@ gsl_vector * solve(gsl_matrix* A,gsl_vector* b)
 	gsl_linalg_LU_solve(A,p,b,x);
 	gsl_permutation_free(p);
 	return x;
-}
+}*/
 
 int main(int argc,char** argv)
 {
-	printf("ITS... ALIVE!!!\n");
+	/*printf("ITS... ALIVE!!!\n");
 	int i;
 	gsl_vector * v=gsl_vector_alloc(3);
 	for(i=0;i<3;i++){
@@ -49,7 +50,7 @@ int main(int argc,char** argv)
 
 	gsl_matrix_view m=gsl_matrix_view_array(a_data,4,4);
 	gsl_vector_view b=gsl_vector_view_array(b_data,4);
-	gsl_vector * x=solve(&m.matrix,&b.vector);//gsl_vector_alloc(4);
+	gsl_vector * x=solve(&m.matrix,&b.vector);*///gsl_vector_alloc(4);
 /*	int s;
 	gsl_permutation * p=gsl_permutation_alloc(4);
 	gsl_linalg_LU_decomp(&m.matrix,p,&s);
@@ -64,11 +65,7 @@ int main(int argc,char** argv)
 		gsl_vector_fprintf(stdout,x,"%g");
 	}
 	gsl_permutation_free(p);*/
-	gsl_matrix* A;
-	gsl_vector* B;
-	gsl_vector_fprintf(stdout,x,"%g");
-	gsl_vector_free(x);
-	Component com[2];
+	Component com[3];
 	Vertex vert[2];
 	vert[0].id=0;
 	vert[1].id=1;
@@ -76,14 +73,16 @@ int main(int argc,char** argv)
 	com[0].B=1;
 	com[1].A=1;
 	com[1].B=0;
+	com[2].A=0;
+	com[2].B=1;
+	com[0].type=WIRE;
+	com[1].type=BATTERY;
+	com[2].type=RESISTOR;
 	Circuit c;
 	c.components=com;
-	c.ccount=2;
+	c.ccount=3;
 	c.vertices=vert;
 	c.vcount=2;
-	to_matrix(&c,&A,&B);
-	print_matrix(A);
-	gsl_matrix_free(A);
-	gsl_vector_free(B);
+	update_circuit(&c);
 	return 0;
 }
