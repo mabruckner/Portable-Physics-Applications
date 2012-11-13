@@ -39,11 +39,11 @@ void to_matrix(Circuit* c,gsl_matrix** A_ptr,gsl_vector** b_ptr)
 		}
 		if(c->components[i].type==RESISTOR)
 		{
-			gsl_matrix_set(A,c->vcount+i-1,i,5/*resistance here*/);
+			gsl_matrix_set(A,c->vcount+i-1,i,*(double *)c->components[i].data);
 		}
 		if(c->components[i].type==BATTERY)
 		{
-			gsl_vector_set(b,c->vcount+i-1,10);
+			gsl_vector_set(b,c->vcount+i-1,*(double *)c->components[i].data);
 		}
 	}//printf("KHLKSJDHFHGLKJ\n");
 	gsl_matrix_set(A,w-1,w-1,1);

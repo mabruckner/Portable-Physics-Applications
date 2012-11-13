@@ -1,9 +1,9 @@
 #include <stdio.h>
-#include <gsl/gsl_vector.h>
-#include <gsl/gsl_linalg.h>
+#include <gtk/gtk.h>
 
+#include "UI.h"
 #include "Circuit.h"
-#include "CircuitFunc.h"
+
 
 /*gsl_vector * solve(gsl_matrix* A,gsl_vector* b)
 {
@@ -29,6 +29,13 @@
 
 int main(int argc,char** argv)
 {
+	GtkWidget *window;
+	gtk_init(&argc,&argv);
+/*	window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	g_signal_connect(window,"destroy",G_CALLBACK(gtk_main_quit),NULL);
+	gtk_widget_show(window);*/
+	init_UI();
+	gtk_main();
 	/*printf("ITS... ALIVE!!!\n");
 	int i;
 	gsl_vector * v=gsl_vector_alloc(3);
@@ -65,6 +72,7 @@ int main(int argc,char** argv)
 		gsl_vector_fprintf(stdout,x,"%g");
 	}
 	gsl_permutation_free(p);*/
+	double data[]={5,10,20};
 	Component com[3];
 	Vertex vert[2];
 	vert[0].id=0;
@@ -75,9 +83,12 @@ int main(int argc,char** argv)
 	com[1].B=0;
 	com[2].A=0;
 	com[2].B=1;
-	com[0].type=WIRE;
+	com[0].type=RESISTOR;
+	com[0].data=data;
 	com[1].type=BATTERY;
+	com[1].data=data+2;
 	com[2].type=RESISTOR;
+	com[2].data=data+1;
 	Circuit c;
 	c.components=com;
 	c.ccount=3;
