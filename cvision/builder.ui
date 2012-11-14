@@ -129,8 +129,8 @@
 <object id="circuitarea" class="GtkDrawingArea">
 
 <property name="visible">True</property>
-<property name="height-request">500</property>
-<property name="width-request">500</property>
+<!--<property name="height-request">500</property>
+<property name="width-request">500</property>-->
 </object>
 <packing></packing>
 </child>
