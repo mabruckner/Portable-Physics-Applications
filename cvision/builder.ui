@@ -1,6 +1,18 @@
 <interface>
-<object id="wire" class="GtkImage">
-<property name="pixbuf">wire.bmp</property>
+<object id="wireimage" class="GtkImage">
+<property name="pixbuf">wire.png</property>
+<property name="visible">True</property>
+</object>
+<object id="resistorimage" class="GtkImage">
+<property name="pixbuf">resistor.png</property>
+<property name="visible">True</property>
+</object>
+<object id="batteryimage" class="GtkImage">
+<property name="pixbuf">battery.png</property>
+<property name="visible">True</property>
+</object>
+<object id="deleteimage" class="GtkImage">
+<property name="pixbuf">delete.png</property>
 <property name="visible">True</property>
 </object>
 <object id="window" class="GtkWindow">
@@ -8,14 +20,56 @@
 <property name="title">CircuitVision</property>
 <property name="border-width">10</property>
 <child>
+
 <object id="pane" class="GtkPaned">
 <property name="visible">True</property>
-<!--<property name="shadow-type">GTK_SHADOW_IN</property>-->
 <child>
 <object id="buttonframe" class="GtkFrame">
+<property name="shadow-type">GTK_SHADOW_IN</property>
 <property name="visible">True</property>
 <child>
-<object id="grid" class="GtkGrid">
+<object id="B" class="GtkToolPalette"><property name="visible">True</property>
+<child>
+<object id="THINGS" class="GtkToolItemGroup">
+<property name="visible">True</property>
+<property name="label">Components</property>
+<child>
+<object id="wirebutton" class="GtkToolButton">
+<property name = "visible">True</property>
+<property name="icon-widget">wireimage</property>
+</object>
+</child>
+<child>
+<object id="resistorbutton" class="GtkToolButton">
+<property name = "visible">True</property>
+<property name="icon-widget">resistorimage</property>
+</object>
+</child>
+<child>
+<object id="batterybutton" class="GtkToolButton">
+<property name = "visible">True</property>
+<property name="icon-widget">batteryimage</property>
+</object>
+</child>
+
+</object>
+</child>
+</object>
+</child>
+</object>
+<!--<child>
+<object id="palette" class="GtkToolPalette">
+<property id="visible">True</property>-->
+
+<!--<child>
+<object id="componentgroup" class="GtkToolItemGroup">
+<property name="label">Components</property>
+<property name="visible">True</property>
+</object>
+</child>-->
+<!--</object>-->
+<!--<object id="grid" class="GtkGrid">
+<property name="border-width">10</property>
 <property name="visible">True</property>
 <property name="row-homogeneous">True</property>
 <property name="column-homogeneous">True</property>
@@ -24,7 +78,7 @@
 <child>
 <object id="wirebutton" class="GtkButton">
 <property name="visible">True</property>
-<property name="label">Button 1</property>
+<property name="image">wireimage</property>
 </object>
 <packing>
 <property name="left-attach">0</property>
@@ -34,7 +88,7 @@
 <child>
 <object id="resistorbutton" class="GtkButton">
 <property name="visible">True</property>
-<property name="image">wire</property>
+<property name="image">resistorimage</property>
 </object>
 <packing>
 <property name="left-attach">1</property>
@@ -44,16 +98,17 @@
 <child>
 <object id="batterybutton" class="GtkButton">
 <property name="visible">True</property>
-<property name="label">BATTERY</property>
+<property name="image">batteryimage</property>
 </object>
 <packing>
 <property name="left-attach">0</property>
 <property name="top-attach">1</property>
 </packing>
 </child>
+<child>
 <object id="quit" class="GtkButton">
 <property name="visible">True</property>
-<property name="label">Quit</property>
+<property name="image">deleteimage</property>
 </object>
 <packing>
 <property name="left-attach">1</property>
@@ -61,19 +116,27 @@
 </packing>
 </child>
 </object>
-<packing>
-</packing>
-</child>
+-->
+<!--</child>
 </object>
+<packing></packing>-->
 </child>
 <child>
-<object id="button3" class="GtkButton">
-<property name="label">HELLO</property>
+<object id="drawingframe" class="GtkFrame">
+<property name="shadow-type">GTK_SHADOW_IN</property>
 <property name="visible">True</property>
+<child>
+<object id="circuitarea" class="GtkDrawingArea">
+
+<property name="visible">True</property>
+<property name="height-request">500</property>
+<property name="width-request">500</property>
+</object>
+<packing></packing>
+</child>
 </object>
 </child>
 </object>
-<packing></packing>
 </child>
 </object>
 </interface>
