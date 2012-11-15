@@ -34,21 +34,31 @@
 <property name="visible">True</property>
 <property name="label">Components</property>
 <child>
-<object id="wirebutton" class="GtkToolButton">
+<object id="wirebutton" class="GtkRadioToolButton">
+<property name="active">True</property>
+<!--<property name="group">batterybutton</property>-->
 <property name = "visible">True</property>
 <property name="icon-widget">wireimage</property>
 </object>
 </child>
 <child>
-<object id="resistorbutton" class="GtkToolButton">
+<object id="resistorbutton" class="GtkRadioToolButton">
+<property name="group">wirebutton</property>
 <property name = "visible">True</property>
 <property name="icon-widget">resistorimage</property>
 </object>
 </child>
 <child>
-<object id="batterybutton" class="GtkToolButton">
+<object id="batterybutton" class="GtkRadioToolButton">
+<property name="group">wirebutton</property>
 <property name = "visible">True</property>
 <property name="icon-widget">batteryimage</property>
+</object>
+</child>
+<child>
+<object id="calculate" class="GtkToolButton">
+<property name="visible">True</property>
+<property name="stock-id">gtk-execute</property>
 </object>
 </child>
 

@@ -82,6 +82,15 @@ void to_circuit(gsl_vector* b,Circuit* c)
 	{
 		c->vertices[i].voltage=gsl_vector_get(b,i+c->ccount);
 	}
+	double min=0;
+	for(i=0;i<c->vcount;i++)
+	{
+		if(c->vertices[i].voltage<min)min=c->vertices[i].voltage;
+	}
+	for(i=0;i<c->vcount;i++)
+	{
+		c->vertices[i].voltage-=min;
+	}
 }
 int update_circuit(Circuit* c)
 {

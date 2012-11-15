@@ -2,30 +2,17 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-#include "Circuit.h"
+
+#include "UIFunc.h"
 #include "UI.h"
-#define PLACE_WIRE 0
-#define PLACE_RESISTOR 1
-#define PLACE_BATTERY 2
-typedef struct
-{
-	Circuit map;
-	int width;
-	int height;
-} Grid;
-static Grid grid;
-static char draw_state;
 
 static cairo_surface_t *surface;
-static GtkBuilder * builder;
 double mouseX;
 double mouseY;
 
 static double gutter=20;
 
-static void remove_component(int i);
-
-static void draw_component(cairo_t *cr,double unit,double x1,double y1,double x2,double y2,Component* com)
+void draw_component(cairo_t *cr,double unit,double x1,double y1,double x2,double y2,Component* com)
 {
 	if(com->type==WIRE)
 	{
@@ -37,12 +24,38 @@ static void draw_component(cairo_t *cr,double unit,double x1,double y1,double x2
 	if(com->type==RESISTOR)
 	{
 		cairo_move_to(cr,x1,y1);
-		
+		cairo_save(cr);
+		cairo_translate(cr,(x1+x2)/2,(y1+y2)/2);
+		cairo_scale(cr,unit,unit);
+		cairo_rotate(cr,atan2(y2-y1,x2-x1));
+		cairo_line_to(cr,-.25,0);
+		cairo_line_to(cr,-.1875,.125);
+		cairo_line_to(cr,-.0625,-.125);
+		cairo_line_to(cr,.0625,.125);
+		cairo_line_to(cr,.1875,-.125);
+		cairo_line_to(cr,.25,0);
+		cairo_restore(cr);
+		cairo_line_to(cr,x2,y2);
 		cairo_stroke(cr);
+		return;
 	}
 	if(com->type==BATTERY)
 	{
-		
+		if(*(double*)com->data==0){
+			cairo_save(cr);
+			
+			const double dash[]={10};
+			cairo_set_dash(cr,dash,1,0);
+			cairo_move_to(cr,x1,y1);
+			cairo_line_to(cr,x2,y2);
+			cairo_stroke(cr);
+			cairo_restore(cr);
+		}else{
+			cairo_move_to(cr,x1,y1);
+			cairo_line_to(cr,x2,y2);
+		}
+		cairo_stroke(cr);
+		return;
 	}
 }
 static gboolean draw_callback(GtkWidget *widget,cairo_t *cr,gpointer data)
@@ -75,12 +88,9 @@ static gboolean draw_callback(GtkWidget *widget,cairo_t *cr,gpointer data)
 			cairo_stroke(cr);
 		}
 	}
-	cairo_set_source_rgb(cr,0,255,0);
-	cairo_arc(cr,250,250,250,0,2*G_PI);
-	cairo_stroke(cr);
 return FALSE;
 }
-static void init_grid(int width,int height)
+void init_grid(int width,int height)
 {
 	grid.map.vertices=NULL;
 	grid.map.components=NULL;
@@ -100,7 +110,7 @@ static void init_grid(int width,int height)
 		grid.map.vertices[i].id=i;
 	}
 }
-static void add_component(Component c)
+void add_component(Component c)
 {
 	int i;
 	for(i=0;i<grid.map.ccount;i++){
@@ -110,7 +120,7 @@ static void add_component(Component c)
 	grid.map.components[grid.map.ccount]=c;
 	grid.map.ccount++;
 }
-static void remove_component(int i)
+void remove_component(int i)
 {
 	if(grid.map.components[i].type!=WIRE){
 		free(grid.map.components[i].data);
@@ -150,11 +160,32 @@ static gboolean press_callback(GtkWidget* widget,GdkEventButton* event,gpointer 
 			ib=i;
 		}
 	}
-	Component c;
-	c.type=WIRE;
-	c.A=MIN(grid.map.vertices[ia].id,grid.map.vertices[ib].id);
-	c.B=MAX(grid.map.vertices[ia].id,grid.map.vertices[ib].id);
-	add_component(c);
+	int A=MIN(grid.map.vertices[ia].id,grid.map.vertices[ib].id);
+	int B=MAX(grid.map.vertices[ia].id,grid.map.vertices[ib].id);
+
+	if(draw_state==PLACE_WIRE){
+		Component c;
+		c.type=WIRE;
+		c.A=A;
+		c.B=B;
+		add_component(c);
+	}
+	if(draw_state==PLACE_RESISTOR){
+		Component c;
+		c.type=RESISTOR;
+		c.A=A;
+		c.B=B;
+		c.data=calloc(1,sizeof(double));
+		add_component(c);
+	}
+	if(draw_state==PLACE_BATTERY){
+		Component c;
+		c.type=BATTERY;
+		c.A=A;
+		c.B=B;
+		c.data=calloc(1,sizeof(double));
+		add_component(c);
+	}
 	gtk_widget_queue_draw_area(widget,0,0,width,height);
 	return TRUE;
 }
@@ -165,9 +196,16 @@ static void init_buttons()
 {
 
 }
+void toggle_callback(GtkToggleToolButton* widget,gpointer data)
+{
+	if(gtk_toggle_tool_button_get_active(widget)==FALSE)return FALSE;
+	if(widget==gtk_builder_get_object(builder,"wirebutton"))draw_state=PLACE_WIRE;
+	if(widget==gtk_builder_get_object(builder,"resistorbutton"))draw_state=PLACE_RESISTOR;
+	if(widget==gtk_builder_get_object(builder,"batterybutton"))draw_state=PLACE_BATTERY;
+}
 void init_UI()
 {
-	init_grid(10,10);
+	init_grid(5,5);
 	printf("beginning\n");
 	builder=gtk_builder_new();
 	gtk_builder_add_from_file(builder,"builder.ui",NULL);
@@ -177,5 +215,13 @@ void init_UI()
 	g_signal_connect(G_OBJECT(area),"draw",G_CALLBACK(draw_callback),NULL);
 	GtkWidget* window=(GtkWidget*)gtk_builder_get_object(builder,"window");
 	g_signal_connect(window,"destroy",G_CALLBACK(gtk_main_quit),NULL);
+
+
+	GtkWidget* button=gtk_builder_get_object(builder,"wirebutton");
+	g_signal_connect(button,"toggled",toggle_callback,NULL);
+	button=gtk_builder_get_object(builder,"resistorbutton");
+	g_signal_connect(button,"toggled",toggle_callback,NULL);
+	button=gtk_builder_get_object(builder,"batterybutton");
+	g_signal_connect(button,"toggled",toggle_callback,NULL);
 	printf("done\n");//gtk_widget_show(window);
 }
