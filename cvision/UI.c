@@ -13,7 +13,7 @@ double mouseY;
 
 static double gutter=20;
 
-void draw_component(cairo_t *cr,double unit,double x1,double y1,double x2,double y2,Component* com)
+void draw_component(cairo_t *cr,PangoContext* pc,double unit,double x1,double y1,double x2,double y2,Component* com)
 {
 	if(com->type==WIRE)
 	{
@@ -35,6 +35,7 @@ void draw_component(cairo_t *cr,double unit,double x1,double y1,double x2,double
 		cairo_line_to(cr,.0625,.125);
 		cairo_line_to(cr,.1875,-.125);
 		cairo_line_to(cr,.25,0);
+		PangoLayout* pn=pango_layout_new(pc);
 		cairo_restore(cr);
 		cairo_line_to(cr,x2,y2);
 		cairo_stroke(cr);
@@ -87,6 +88,7 @@ static gboolean draw_callback(GtkWidget *widget,cairo_t *cr,gpointer data)
 	guint width=gtk_widget_get_allocated_width(widget);
 	guint height=gtk_widget_get_allocated_height(widget);
 	double sw,sh,spacing;
+	PangoLayout* pn=gtk_widget_create_pango_layout(widget,"HELLO? IS THIS WORKING?(\u2126)");
 	sw=((double)width-2*gutter)/grid.width;
 	sh=((double)height-2*gutter)/grid.height;
 	spacing=MIN(sw,sh);
@@ -113,28 +115,71 @@ static gboolean draw_callback(GtkWidget *widget,cairo_t *cr,gpointer data)
 			cairo_stroke(cr);
 		}
 	}
+	pango_cairo_show_layout(cr,pn);
 return FALSE;
 }
 void calculate()
 {
 	Circuit C;
 	C.vertices=calloc(grid.map.ccount*2,sizeof(Vertex));
+	if(C.vertices==NULL){
+		//ERROR, HANDLE HERE
+		return;
+	}
 	C.vcount=0;
 	int i;
 	for(i=0;i<grid.map.ccount;i++)
 	{
 		int A=grid.map.components[i].A;
 		int B=grid.map.components[i].B;
+		printf("%i,%i\n",A,B);
 		int j,k;
-		for(j=0;j<C.vcount;j++)if(A==C.vertices[j].id)break;
-		if(j==C.vcount)for(k=0;k<grid.map.vcount;k++)if(grid.map.vertices[k].id==A)C.vertices[C.vcount++]=grid.map.vertices[k];
-		for(j=0;i<C.vcount;j++)if(B==C.vertices[j].id)break;
-		if(j==C.vcount)for(k=0;k<grid.map.vcount;k++)if(grid.map.vertices[k].id==B)C.vertices[C.vcount++]=grid.map.vertices[k];
+		for(j=0;j<C.vcount;j++){
+			if(A==C.vertices[j].id){
+				break;
+			}
+		}
+		if(j==C.vcount){
+			for(k=0;k<grid.map.vcount;k++){
+				if(grid.map.vertices[k].id==A){
+					printf("A%i\n",k);
+					C.vertices[C.vcount++]=grid.map.vertices[k];
+				}
+			}
+		}
+		for(j=0;j<C.vcount;j++){
+			if(B==C.vertices[j].id){
+				break;
+				printf("B==%i(%i)\n",C.vertices[j].id,j);
+			}
+		}
+		printf("?:%i,%i\n",C.vcount,j);
+		if(j==C.vcount){
+			for(k=0;k<grid.map.vcount;k++){
+				if(grid.map.vertices[k].id==B){
+					printf("B%i\n",k);
+					C.vertices[C.vcount++]=grid.map.vertices[k];
+				}
+			}
+		}
 	}
 	C.ccount=grid.map.ccount;
 	C.components=grid.map.components;
 	printf("vcount: %i\nccount:%i\n",C.vcount,C.ccount);
-	update_circuit(&C);
+	if(update_circuit(&C)<0){
+		//error, handle here
+		free(C.vertices);
+		return;
+	}
+	for(i=0;i<C.vcount;i++){
+		int j;
+		for(j=0;j<grid.map.vcount;j++){
+			if(grid.map.vertices[j].id==C.vertices[i].id){
+				grid.map.vertices[j].voltage=C.vertices[i].voltage;
+			}
+		}
+	}
+	free(C.vertices);
 }
 void init_grid(int width,int height)
 {

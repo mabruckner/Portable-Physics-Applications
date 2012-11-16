@@ -112,10 +112,11 @@ int update_circuit(Circuit* c)
 	double det=gsl_linalg_LU_det(A,s);
 	printf("\ndeterminant is %g\n",det);
 	if(det==0.0){
-		printf("ERROR, NON-TRIVIAL SOLUTION\nFREEING MEMORY AND HALTING COMPUTATION\n");
+		printf("ERROR, NON-TRIVIAL SOLUTION\nFREEING MEMORY AND HALTING COMPUTATION\n...");
 		gsl_vector_free(b);
 		gsl_matrix_free(A);
 		gsl_permutation_free(p);
+		printf("DONE\n");
 		return -1;
 	}
 	gsl_vector* x =gsl_vector_alloc(b->size);
