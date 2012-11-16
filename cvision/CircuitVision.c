@@ -72,28 +72,33 @@ int main(int argc,char** argv)
 		gsl_vector_fprintf(stdout,x,"%g");
 	}
 	gsl_permutation_free(p);*/
-	double data[]={5,10,20};
-	Component com[3];
-	Vertex vert[2];
+	double data[]={5,10};
+	Component com[4];
+	Vertex vert[4];
 	vert[0].id=0;
 	vert[1].id=1;
+	vert[2].id=2;
+	vert[3].id=3;
 	com[0].A=0;
 	com[0].B=1;
 	com[1].A=1;
-	com[1].B=0;
-	com[2].A=0;
-	com[2].B=1;
-	com[0].type=RESISTOR;
+	com[1].B=2;
+	com[2].A=2;
+	com[2].B=3;
+	com[3].A=3;
+	com[3].B=0;
+	com[0].type=BATTERY;
 	com[0].data=data;
-	com[1].type=BATTERY;
-	com[1].data=data+2;
+	com[1].type=WIRE;
+	com[1].data=NULL;
 	com[2].type=RESISTOR;
 	com[2].data=data+1;
+	com[3].type=WIRE;
 	Circuit c;
 	c.components=com;
-	c.ccount=3;
+	c.ccount=4;
 	c.vertices=vert;
-	c.vcount=2;
+	c.vcount=4;
 	update_circuit(&c);
 	return 0;
 }

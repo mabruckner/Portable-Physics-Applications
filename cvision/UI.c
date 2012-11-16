@@ -6,6 +6,7 @@
 #include "UIFunc.h"
 #include "UI.h"
 
+
 static cairo_surface_t *surface;
 double mouseX;
 double mouseY;
@@ -51,10 +52,33 @@ void draw_component(cairo_t *cr,double unit,double x1,double y1,double x2,double
 			cairo_stroke(cr);
 			cairo_restore(cr);
 		}else{
+			if(*(double*)com->data<0){
+				double tmp=x1;
+				x1=x2;
+				x2=tmp;
+				tmp=y1;
+				y1=y2;
+				y2=tmp;
+			}
 			cairo_move_to(cr,x1,y1);
+			cairo_save(cr);
+			cairo_translate(cr,(x1+x2)/2,(y1+y2)/2);
+			cairo_scale(cr,unit,unit);
+			cairo_rotate(cr,atan2(y2-y1,x2-x1));
+			cairo_line_to(cr,-.05,0);
+			cairo_move_to(cr,-.05,.25);
+			cairo_line_to(cr,-.05,-.25);
+			cairo_move_to(cr,.05,.15);
+			cairo_line_to(cr,.05,-.15);
+			cairo_move_to(cr,-.15,-.25);
+			cairo_line_to(cr,-.25,-.25);
+			cairo_move_to(cr,-.2,-.2);
+			cairo_line_to(cr,-.2,-.3);
+			cairo_move_to(cr,.05,0);
+			cairo_restore(cr);
 			cairo_line_to(cr,x2,y2);
+			cairo_stroke(cr);
 		}
-		cairo_stroke(cr);
 		return;
 	}
 }
@@ -71,7 +95,7 @@ static gboolean draw_callback(GtkWidget *widget,cairo_t *cr,gpointer data)
 	cairo_translate(cr,(double)width/2,(double)height/2);
 	cairo_translate(cr,-(double)grid.width/2.0*spacing,-(double)grid.height/2.0*spacing);
 	int i,j;
-	cairo_set_source_rgb(cr,255,0,0);
+	cairo_set_source_rgb(cr,0,0,0);
 	for(i=0;i<grid.map.ccount;i++)
 	{
 		Component* c=grid.map.components+i;
@@ -84,11 +108,33 @@ static gboolean draw_callback(GtkWidget *widget,cairo_t *cr,gpointer data)
 	{
 		for(j=0;j<=grid.height;j++)
 		{
-			cairo_arc(cr,i*spacing,j*spacing,5,0,2*G_PI);
+			cairo_arc(cr,i*spacing,j*spacing,2.5,0,2*G_PI);
+			cairo_fill_preserve(cr);
 			cairo_stroke(cr);
 		}
 	}
 return FALSE;
+}
+void calculate()
+{
+	Circuit C;
+	C.vertices=calloc(grid.map.ccount*2,sizeof(Vertex));
+	C.vcount=0;
+	int i;
+	for(i=0;i<grid.map.ccount;i++)
+	{
+		int A=grid.map.components[i].A;
+		int B=grid.map.components[i].B;
+		int j,k;
+		for(j=0;j<C.vcount;j++)if(A==C.vertices[j].id)break;
+		if(j==C.vcount)for(k=0;k<grid.map.vcount;k++)if(grid.map.vertices[k].id==A)C.vertices[C.vcount++]=grid.map.vertices[k];
+		for(j=0;i<C.vcount;j++)if(B==C.vertices[j].id)break;
+		if(j==C.vcount)for(k=0;k<grid.map.vcount;k++)if(grid.map.vertices[k].id==B)C.vertices[C.vcount++]=grid.map.vertices[k];
+	}
+	C.ccount=grid.map.ccount;
+	C.components=grid.map.components;
+	printf("vcount: %i\nccount:%i\n",C.vcount,C.ccount);
+	update_circuit(&C);
 }
 void init_grid(int width,int height)
 {
@@ -176,6 +222,7 @@ static gboolean press_callback(GtkWidget* widget,GdkEventButton* event,gpointer 
 		c.A=A;
 		c.B=B;
 		c.data=calloc(1,sizeof(double));
+		*(double*)c.data=10;
 		add_component(c);
 	}
 	if(draw_state==PLACE_BATTERY){
@@ -184,6 +231,7 @@ static gboolean press_callback(GtkWidget* widget,GdkEventButton* event,gpointer 
 		c.A=A;
 		c.B=B;
 		c.data=calloc(1,sizeof(double));
+		*(double*)c.data=5;
 		add_component(c);
 	}
 	gtk_widget_queue_draw_area(widget,0,0,width,height);
@@ -202,6 +250,10 @@ void toggle_callback(GtkToggleToolButton* widget,gpointer data)
 	if(widget==gtk_builder_get_object(builder,"wirebutton"))draw_state=PLACE_WIRE;
 	if(widget==gtk_builder_get_object(builder,"resistorbutton"))draw_state=PLACE_RESISTOR;
 	if(widget==gtk_builder_get_object(builder,"batterybutton"))draw_state=PLACE_BATTERY;
+}
+void calc_callback(GtkToolButton* widget,gpointer data)
+{
+	calculate();
 }
 void init_UI()
 {
@@ -223,5 +275,7 @@ void init_UI()
 	g_signal_connect(button,"toggled",toggle_callback,NULL);
 	button=gtk_builder_get_object(builder,"batterybutton");
 	g_signal_connect(button,"toggled",toggle_callback,NULL);
+	button=gtk_builder_get_object(builder,"calculate");
+	g_signal_connect(button,"clicked",calc_callback,NULL);
 	printf("done\n");//gtk_widget_show(window);
 }
