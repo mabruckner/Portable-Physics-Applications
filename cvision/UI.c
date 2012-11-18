@@ -15,6 +15,26 @@ static double gutter=20;
 
 void draw_component(cairo_t *cr,PangoContext* pc,double unit,double x1,double y1,double x2,double y2,Component* com)
 {
+	PangoLayout* pn=pango_layout_new(pc);
+	char buffer[20];
+	sprintf(buffer,"%.3gA",com->current);
+	cairo_move_to(cr,(x1+x2)/2,(y1+y2)/2);
+	pango_layout_set_text(pn,buffer,-1);
+	cairo_save(cr);
+	cairo_translate(cr,(x1+x2)/2,(y1+y2)/2);
+	double ang=atan2(y2-y1,x2-x1);
+	if((ang>90&&ang<270)){
+		ang-=180;
+	}
+	int w=0;
+	int h=0;
+	pango_layout_get_pixel_size(pn,&w,&h);
+	cairo_rotate(cr,ang);
+	cairo_move_to(cr,-w/2,10);
+	pango_cairo_update_layout(cr,pn);
+	pango_cairo_show_layout(cr,pn);
+	
+	cairo_restore(cr);
 	if(com->type==WIRE)
 	{
 		cairo_move_to(cr,x1,y1);
@@ -24,9 +44,16 @@ void draw_component(cairo_t *cr,PangoContext* pc,double unit,double x1,double y1
 	}
 	if(com->type==RESISTOR)
 	{
+		//char buffer[20];
+		//sprintf(buffer,"%g\u2126 %gA",*(double*)com->data,com->current);
 		cairo_move_to(cr,x1,y1);
 		cairo_save(cr);
 		cairo_translate(cr,(x1+x2)/2,(y1+y2)/2);
+		/*cairo_move_to(cr,unit*.2,unit*.2);
+		PangoLayout* pn=pango_layout_new(pc);
+		pango_layout_set_text(pn,buffer,-1);
+		pango_cairo_update_layout(cr,pn);
+		pango_cairo_show_layout(cr,pn);*/
 		cairo_scale(cr,unit,unit);
 		cairo_rotate(cr,atan2(y2-y1,x2-x1));
 		cairo_line_to(cr,-.25,0);
@@ -35,10 +62,20 @@ void draw_component(cairo_t *cr,PangoContext* pc,double unit,double x1,double y1
 		cairo_line_to(cr,.0625,.125);
 		cairo_line_to(cr,.1875,-.125);
 		cairo_line_to(cr,.25,0);
-		PangoLayout* pn=pango_layout_new(pc);
 		cairo_restore(cr);
 		cairo_line_to(cr,x2,y2);
 		cairo_stroke(cr);
+
+		cairo_save(cr);
+		cairo_translate(cr,(x1+x2)/2,(y1+y2)/2);
+		cairo_rotate(cr,ang);
+		sprintf(buffer,"%g\u2126",*(double*)com->data);
+		pango_layout_set_text(pn,buffer,-1);
+		pango_layout_get_pixel_size(pn,&w,&h);
+		cairo_move_to(cr,-w/2,-h-10);
+		pango_cairo_update_layout(cr,pn);
+		pango_cairo_show_layout(cr,pn);
+		cairo_restore(cr);
 		return;
 	}
 	if(com->type==BATTERY)
@@ -88,12 +125,14 @@ static gboolean draw_callback(GtkWidget *widget,cairo_t *cr,gpointer data)
 	guint width=gtk_widget_get_allocated_width(widget);
 	guint height=gtk_widget_get_allocated_height(widget);
 	double sw,sh,spacing;
-	PangoLayout* pn=gtk_widget_create_pango_layout(widget,"HELLO? IS THIS WORKING?(\u2126)");
+	//PangoLayout* pn=gtk_widget_create_pango_layout(widget,"HELLO? IS THIS WORKING?(\u2126)");
+	PangoContext* pc=gtk_widget_get_pango_context(widget);
+	PangoLayout* pn=pango_layout_new(pc);
 	sw=((double)width-2*gutter)/grid.width;
 	sh=((double)height-2*gutter)/grid.height;
 	spacing=MIN(sw,sh);
 	cairo_set_source_rgb(cr,0,0,255);
-	cairo_arc(cr,mouseX,mouseY,5,0,2*G_PI);
+//	cairo_arc(cr,mouseX,mouseY,5,0,2*G_PI);
 	cairo_translate(cr,(double)width/2,(double)height/2);
 	cairo_translate(cr,-(double)grid.width/2.0*spacing,-(double)grid.height/2.0*spacing);
 	int i,j;
@@ -103,23 +142,44 @@ static gboolean draw_callback(GtkWidget *widget,cairo_t *cr,gpointer data)
 		Component* c=grid.map.components+i;
 		int A=c->A;
 		int B=c->B;
-		draw_component(cr,spacing,spacing*(A%(grid.width+1)),spacing*(A/(grid.width+1)),spacing*(B%(grid.width+1)),spacing*(B/(grid.width+1)),c);
+		draw_component(cr,pc,spacing,spacing*(A%(grid.width+1)),spacing*(A/(grid.width+1)),spacing*(B%(grid.width+1)),spacing*(B/(grid.width+1)),c);
 	}
 	cairo_set_source_rgb(cr,0,0,0);
+	char buffer[20];
 	for(i=0;i<=grid.width;i++)
 	{
 		for(j=0;j<=grid.height;j++)
 		{
-			cairo_arc(cr,i*spacing,j*spacing,2.5,0,2*G_PI);
+			sprintf(buffer,"%gV",grid.map.vertices[i+j*(grid.width+1)].voltage);
+			pango_layout_set_text(pn,buffer,-1);
+			int w,h;
+			pango_layout_get_pixel_size(pn,&w,&h);
+			cairo_arc(cr,i*spacing,j*spacing,w/2,0,2*G_PI);
+			cairo_set_source_rgb(cr,1.0,1.0,1.0);
 			cairo_fill_preserve(cr);
+			cairo_set_source_rgb(cr,0.0,0.0,0.0);
 			cairo_stroke(cr);
+			cairo_move_to(cr,i*spacing-w/2,j*spacing-h/2);
+			pango_cairo_update_layout(cr,pn);
+			pango_cairo_show_layout(cr,pn);
+			cairo_new_path(cr);
 		}
 	}
-	pango_cairo_show_layout(cr,pn);
+	//pango_cairo_show_layout(cr,pn);
 return FALSE;
 }
 void calculate()
 {
+	int i;
+	for(i=0;i<grid.map.ccount;i++){
+		grid.map.components[i].current=0;
+	}
+	for(i=0;i<grid.map.vcount;i++){
+		grid.map.vertices[i].voltage=0;
+	}
+	if(grid.map.ccount==0){
+		return;
+	}
 	Circuit C;
 	C.vertices=calloc(grid.map.ccount*2,sizeof(Vertex));
 	if(C.vertices==NULL){
@@ -127,7 +187,6 @@ void calculate()
 		return;
 	}
 	C.vcount=0;
-	int i;
 	for(i=0;i<grid.map.ccount;i++)
 	{
 		int A=grid.map.components[i].A;
@@ -278,7 +337,15 @@ static gboolean press_callback(GtkWidget* widget,GdkEventButton* event,gpointer 
 		c.data=calloc(1,sizeof(double));
 		*(double*)c.data=5;
 		add_component(c);
+	}if(draw_state==DELETE){
+		for(i=0;i<grid.map.ccount;i++){
+			if((grid.map.components[i].A==A)&&(grid.map.components[i].B==B)){
+				remove_component(i);
+				break;
+			}
+		}
 	}
+	calculate();
 	gtk_widget_queue_draw_area(widget,0,0,width,height);
 	return TRUE;
 }
@@ -295,6 +362,7 @@ void toggle_callback(GtkToggleToolButton* widget,gpointer data)
 	if(widget==gtk_builder_get_object(builder,"wirebutton"))draw_state=PLACE_WIRE;
 	if(widget==gtk_builder_get_object(builder,"resistorbutton"))draw_state=PLACE_RESISTOR;
 	if(widget==gtk_builder_get_object(builder,"batterybutton"))draw_state=PLACE_BATTERY;
+	if(widget==gtk_builder_get_object(builder,"deletebutton"))draw_state=DELETE;
 }
 void calc_callback(GtkToolButton* widget,gpointer data)
 {
@@ -319,6 +387,8 @@ void init_UI()
 	button=gtk_builder_get_object(builder,"resistorbutton");
 	g_signal_connect(button,"toggled",toggle_callback,NULL);
 	button=gtk_builder_get_object(builder,"batterybutton");
+	g_signal_connect(button,"toggled",toggle_callback,NULL);
+	button=gtk_builder_get_object(builder,"deletebutton");
 	g_signal_connect(button,"toggled",toggle_callback,NULL);
 	button=gtk_builder_get_object(builder,"calculate");
 	g_signal_connect(button,"clicked",calc_callback,NULL);

@@ -56,6 +56,15 @@
 </object>
 </child>
 <child>
+<object id="deletebutton" class="GtkRadioToolButton">
+<property name="group">wirebutton</property>
+<property name="visible">True</property>
+<property name="icon-widget">deleteimage</property>
+</object>
+</child>
+
+
+<child>
 <object id="calculate" class="GtkToolButton">
 <property name="visible">True</property>
 <property name="stock-id">gtk-execute</property>
