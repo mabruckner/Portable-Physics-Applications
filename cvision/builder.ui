@@ -15,6 +15,128 @@
 <property name="pixbuf">delete.png</property>
 <property name="visible">True</property>
 </object>
+<object id="editimage" class="GtkImage">
+<property name="pixbuf">edit.png</property>
+<property name="visible">True</property>
+</object>
+
+<object id="batterywindowadjustment" class="GtkAdjustment">
+<property name="lower">0</property>
+<property name="upper">20</property>
+<property name="step-increment">.1</property>
+</object>
+<object id="batterywindow" class="GtkWindow">
+<property name="visible">True</property>
+<property name="title">Edit Battery</property>
+<property name="border-width">10</property>
+<child>
+<object id="batterywindowgrid" class="GtkGrid">
+<property name="visible">True</property>
+<property name="row-spacing">5</property>
+<property name="column-spacing">5</property>
+<child>
+<object id="voltage" class="GtkScale">
+<property name="visible">True</property>
+<property name="adjustment">batterywindowadjustment</property>
+</object>
+<packing>
+<property name="top-attach">0</property>
+<property name="left-attach">0</property>
+<property name="width">2</property>
+</packing>
+</child>
+<child>
+<object id="polarity" class="GtkToggleButton">
+<property name="visible">True</property>
+<property name="label">Switch Polarity</property>
+</object>
+<packing>
+<property name="top-attach">1</property>
+<property name="left-attach">0</property>
+<property name="width">2</property>
+</packing>
+</child>
+<child>
+<object id="batterywindowcancel" class="GtkButton">
+<property name="visible">True</property>
+<property name="label">gtk-cancel</property>
+<property name="use-stock">True</property>
+</object>
+<packing>
+<property name="top-attach">2</property>
+<property name="left-attach">0</property>
+<property name="width">1</property>
+</packing>
+</child>
+<child>
+<object id="batterywindowdone" class="GtkButton">
+<property name="visible">True</property>
+<property name="label">gtk-apply</property>
+<property name="use-stock">True</property>
+</object>
+<packing>
+<property name="top-attach">2</property>
+<property name="left-attach">1</property>
+<property name="width">1</property>
+</packing>
+</child>
+</object>
+</child>
+</object>
+
+<object id="resistorwindowadjustment" class="GtkAdjustment">
+<property name="lower">0</property>
+<property name="upper">20</property>
+<property name="step-increment">.1</property>
+</object>
+<object id="resistorwindow" class="GtkWindow">
+<property name="visible">True</property>
+<property name="title">Edit Battery</property>
+<property name="border-width">10</property>
+<child>
+<object id="resistorwindowgrid" class="GtkGrid">
+<property name="visible">True</property>
+<property name="row-spacing">5</property>
+<property name="column-spacing">5</property>
+<child>
+<object id="resistance" class="GtkScale">
+<property name="visible">True</property>
+<property name="adjustment">batterywindowadjustment</property>
+</object>
+<packing>
+<property name="top-attach">0</property>
+<property name="left-attach">0</property>
+<property name="width">2</property>
+</packing>
+</child>
+<child>
+<object id="resistorwindowcancel" class="GtkButton">
+<property name="visible">True</property>
+<property name="label">gtk-cancel</property>
+<property name="use-stock">True</property>
+</object>
+<packing>
+<property name="top-attach">1</property>
+<property name="left-attach">0</property>
+<property name="width">1</property>
+</packing>
+</child>
+<child>
+<object id="resistorwindowdone" class="GtkButton">
+<property name="visible">True</property>
+<property name="label">gtk-apply</property>
+<property name="use-stock">True</property>
+</object>
+<packing>
+<property name="top-attach">1</property>
+<property name="left-attach">1</property>
+<property name="width">1</property>
+</packing>
+</child>
+</object>
+</child>
+</object>
+
 <object id="window" class="GtkWindow">
 <property name="visible">True</property>
 <property name="title">CircuitVision</property>
@@ -60,6 +182,13 @@
 <property name="group">wirebutton</property>
 <property name="visible">True</property>
 <property name="icon-widget">deleteimage</property>
+</object>
+</child>
+<child>
+<object id="editbutton" class="GtkRadioToolButton">
+<property name="group">wirebutton</property>
+<property name="visible">True</property>
+<property name="icon-widget">editimage</property>
 </object>
 </child>
 

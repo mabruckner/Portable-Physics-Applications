@@ -76,6 +76,7 @@ void draw_component(cairo_t *cr,PangoContext* pc,double unit,double x1,double y1
 		pango_cairo_update_layout(cr,pn);
 		pango_cairo_show_layout(cr,pn);
 		cairo_restore(cr);
+		cairo_new_path(cr);
 		return;
 	}
 	if(com->type==BATTERY)
@@ -117,6 +118,7 @@ void draw_component(cairo_t *cr,PangoContext* pc,double unit,double x1,double y1
 			cairo_line_to(cr,x2,y2);
 			cairo_stroke(cr);
 		}
+		
 		return;
 	}
 }
@@ -363,6 +365,7 @@ void toggle_callback(GtkToggleToolButton* widget,gpointer data)
 	if(widget==gtk_builder_get_object(builder,"resistorbutton"))draw_state=PLACE_RESISTOR;
 	if(widget==gtk_builder_get_object(builder,"batterybutton"))draw_state=PLACE_BATTERY;
 	if(widget==gtk_builder_get_object(builder,"deletebutton"))draw_state=DELETE;
+	if(widget==gtk_builder_get_object(builder,"editbutton"))draw_state=EDIT;
 }
 void calc_callback(GtkToolButton* widget,gpointer data)
 {
@@ -389,6 +392,8 @@ void init_UI()
 	button=gtk_builder_get_object(builder,"batterybutton");
 	g_signal_connect(button,"toggled",toggle_callback,NULL);
 	button=gtk_builder_get_object(builder,"deletebutton");
+	g_signal_connect(button,"toggled",toggle_callback,NULL);
+	button=gtk_builder_get_object(builder,"editbutton");
 	g_signal_connect(button,"toggled",toggle_callback,NULL);
 	button=gtk_builder_get_object(builder,"calculate");
 	g_signal_connect(button,"clicked",calc_callback,NULL);

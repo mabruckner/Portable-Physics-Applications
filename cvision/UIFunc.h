@@ -7,6 +7,8 @@
 #define PLACE_RESISTOR 1
 #define PLACE_BATTERY 2
 #define DELETE 3
+#define EDIT 4
+
 typedef struct
 {
 	Circuit map;
