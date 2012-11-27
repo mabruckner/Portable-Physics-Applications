@@ -346,6 +346,13 @@ static gboolean press_callback(GtkWidget* widget,GdkEventButton* event,gpointer 
 				break;
 			}
 		}
+	}if(draw_state==EDIT){
+		for(i=0;i<grid.map.ccount;i++){
+			if((grid.map.components[i].A==A)&&(grid.map.components[i].B==B)){
+				edit_dialog(grid.map.components+i);
+				break;
+			}
+		}
 	}
 	calculate();
 	gtk_widget_queue_draw_area(widget,0,0,width,height);

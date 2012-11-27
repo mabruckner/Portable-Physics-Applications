@@ -1,4 +1,4 @@
-CircuitVision: CircuitVision.o Circuit.o UI.o
+CircuitVision: CircuitVision.o Circuit.o UI.o Dialogs.o
 	gcc -Wall -g $^ -lgsl -lgslcblas -lm `pkg-config --libs gtk+-3.0` -o $@
 
 CircuitVision.o: CircuitVision.c Circuit.h
@@ -8,3 +8,6 @@ Circuit.o: Circuit.c Circuit.h CircuitFunc.h
 	gcc -Wall -g -c $< -o $@
 UI.o: UI.c UI.h UIFunc.h
 	gcc -Wall -g -c $< `pkg-config --cflags gtk+-3.0` -o $@
+
+Dialogs.o: Dialogs.c Dialogs.h UIFunc.h
+	gcc -Wall -g -c $< `pkg-config --cflags gtk+-3.0`
