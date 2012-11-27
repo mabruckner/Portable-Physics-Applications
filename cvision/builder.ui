@@ -20,123 +20,6 @@
 <property name="visible">True</property>
 </object>
 
-<!--<object id="batterywindowadjustment" class="GtkAdjustment">
-<property name="lower">0</property>
-<property name="upper">20</property>
-<property name="step-increment">.1</property>
-</object>
-<object id="batterywindow" class="GtkWindow">
-<property name="visible">True</property>
-<property name="title">Edit Battery</property>
-<property name="border-width">10</property>
-<child>
-<object id="batterywindowgrid" class="GtkGrid">
-<property name="visible">True</property>
-<property name="row-spacing">5</property>
-<property name="column-spacing">5</property>
-<child>
-<object id="voltage" class="GtkScale">
-<property name="visible">True</property>
-<property name="adjustment">batterywindowadjustment</property>
-</object>
-<packing>
-<property name="top-attach">0</property>
-<property name="left-attach">0</property>
-<property name="width">2</property>
-</packing>
-</child>
-<child>
-<object id="polarity" class="GtkToggleButton">
-<property name="visible">True</property>
-<property name="label">Switch Polarity</property>
-</object>
-<packing>
-<property name="top-attach">1</property>
-<property name="left-attach">0</property>
-<property name="width">2</property>
-</packing>
-</child>
-<child>
-<object id="batterywindowcancel" class="GtkButton">
-<property name="visible">True</property>
-<property name="label">gtk-cancel</property>
-<property name="use-stock">True</property>
-</object>
-<packing>
-<property name="top-attach">2</property>
-<property name="left-attach">0</property>
-<property name="width">1</property>
-</packing>
-</child>
-<child>
-<object id="batterywindowdone" class="GtkButton">
-<property name="visible">True</property>
-<property name="label">gtk-apply</property>
-<property name="use-stock">True</property>
-</object>
-<packing>
-<property name="top-attach">2</property>
-<property name="left-attach">1</property>
-<property name="width">1</property>
-</packing>
-</child>
-</object>
-</child>
-</object>
-
-<object id="resistorwindowadjustment" class="GtkAdjustment">
-<property name="lower">0</property>
-<property name="upper">20</property>
-<property name="step-increment">.1</property>
-</object>
-<object id="resistorwindow" class="GtkWindow">
-<property name="visible">True</property>
-<property name="title">Edit Battery</property>
-<property name="border-width">10</property>
-<child>
-<object id="resistorwindowgrid" class="GtkGrid">
-<property name="visible">True</property>
-<property name="row-spacing">5</property>
-<property name="column-spacing">5</property>
-<child>
-<object id="resistance" class="GtkScale">
-<property name="visible">True</property>
-<property name="adjustment">batterywindowadjustment</property>
-</object>
-<packing>
-<property name="top-attach">0</property>
-<property name="left-attach">0</property>
-<property name="width">2</property>
-</packing>
-</child>
-<child>
-<object id="resistorwindowcancel" class="GtkButton">
-<property name="visible">True</property>
-<property name="label">gtk-cancel</property>
-<property name="use-stock">True</property>
-</object>
-<packing>
-<property name="top-attach">1</property>
-<property name="left-attach">0</property>
-<property name="width">1</property>
-</packing>
-</child>
-<child>
-<object id="resistorwindowdone" class="GtkButton">
-<property name="visible">True</property>
-<property name="label">gtk-apply</property>
-<property name="use-stock">True</property>
-</object>
-<packing>
-<property name="top-attach">1</property>
-<property name="left-attach">1</property>
-<property name="width">1</property>
-</packing>
-</child>
-</object>
-</child>
-</object>-->
-
 <object id="window" class="GtkWindow">
 <property name="visible">True</property>
 <property name="title">CircuitVision</property>
@@ -158,7 +41,6 @@
 <child>
 <object id="wirebutton" class="GtkRadioToolButton">
 <property name="active">True</property>
-<!--<property name="group">batterybutton</property>-->
 <property name = "visible">True</property>
 <property name="icon-widget">wireimage</property>
 </object>
@@ -205,69 +87,6 @@
 </object>
 </child>
 </object>
-<!--<child>
-<object id="palette" class="GtkToolPalette">
-<property id="visible">True</property>-->
-
-<!--<child>
-<object id="componentgroup" class="GtkToolItemGroup">
-<property name="label">Components</property>
-<property name="visible">True</property>
-</object>
-</child>-->
-<!--</object>-->
-<!--<object id="grid" class="GtkGrid">
-<property name="border-width">10</property>
-<property name="visible">True</property>
-<property name="row-homogeneous">True</property>
-<property name="column-homogeneous">True</property>
-<property name="row-spacing">5</property>
-<property name="column-spacing">5</property>
-<child>
-<object id="wirebutton" class="GtkButton">
-<property name="visible">True</property>
-<property name="image">wireimage</property>
-</object>
-<packing>
-<property name="left-attach">0</property>
-<property name="top-attach">0</property>
-</packing>
-</child>
-<child>
-<object id="resistorbutton" class="GtkButton">
-<property name="visible">True</property>
-<property name="image">resistorimage</property>
-</object>
-<packing>
-<property name="left-attach">1</property>
-<property name="top-attach">0</property>
-</packing>
-</child>
-<child>
-<object id="batterybutton" class="GtkButton">
-<property name="visible">True</property>
-<property name="image">batteryimage</property>
-</object>
-<packing>
-<property name="left-attach">0</property>
-<property name="top-attach">1</property>
-</packing>
-</child>
-<child>
-<object id="quit" class="GtkButton">
-<property name="visible">True</property>
-<property name="image">deleteimage</property>
-</object>
-<packing>
-<property name="left-attach">1</property>
-<property name="top-attach">1</property>
-</packing>
-</child>
-</object>
--->
-<!--</child>
-</object>
-<packing></packing>-->
 </child>
 <child>
 <object id="drawingframe" class="GtkFrame">
@@ -277,8 +96,6 @@
 <object id="circuitarea" class="GtkDrawingArea">
 
 <property name="visible">True</property>
-<!--<property name="height-request">500</property>
-<property name="width-request">500</property>-->
 </object>
 <packing></packing>
 </child>

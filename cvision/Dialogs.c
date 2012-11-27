@@ -1,28 +1,6 @@
 #include "UIFunc.h"
 #include "Dialogs.h"
 #include <math.h>
-/*void dialog_cancel(GtkButton* button,gpointer user_data)
-{
-	if(current==NULL){
-		return;
-	}
-	if(current->type==BATTERY){
-		gtk_widget_hide(gtk_builder_get_object(builder,"batterywindow"));
-		return;
-	}
-	if(current->type==RESISTOR){
-		gtk_widget_hide(gtk_builder_get_object(builder,"resistorwindow"));
-		return;
-	}
-}
-int resistor_dialog(Component* resistor)
-{
-	current=resistor;
-}
-int init_edit_dialogs()
-{
-	
-}*/
 gchar* format_value(GtkScale* scale,gdouble value,gpointer user_data)
 {
 	Component* c=(Component*)user_data;
@@ -49,17 +27,5 @@ void edit_dialog(Component* component)
 			*(double*)component->data=gtk_adjustment_get_value(adjustment);
 	}
 	gtk_widget_destroy(GTK_WIDGET(dialog));
-/*	if(current!=NULL)
-	{
-		return -1;
-	}
-	current=component;
-	if(current->type==BATTERY)
-	{
-		GtkWidget* dialog=(GtkWidget*)gtk_builder_get_object(builder,"batterywindow");
-		gtk_widget_show_all(dialog);
-		GtkAdjustment* adjustment=(GtkAdjustment*)gtk_builder_get_object(builder,"batterywindowadjustment");
-		gtk_adjustment_set_value(adjustment,fabs((float)*(double*)component->data));
-	}*/
 }
 

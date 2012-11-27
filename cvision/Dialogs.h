@@ -2,7 +2,6 @@
 #include "Circuit.h"
 
 GtkAdjustment adjustment;
-//GtkDialog dialog;
 GtkButton submit;
 GtkButton cancel;
 GtkScale range;
