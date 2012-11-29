@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include "Viewer.h"
 #include "UIFunc.h"
 #include "UI.h"
 
@@ -381,9 +382,11 @@ void calc_callback(GtkToolButton* widget,gpointer data)
 void init_UI()
 {
 	init_grid(5,5);
+//	g_thread_new("Viewer",init_Viewer,NULL);
 	printf("beginning\n");
 	builder=gtk_builder_new();
 	gtk_builder_add_from_file(builder,"builder.ui",NULL);
+printf("began\n");
 	GtkWidget* area=(GtkWidget*)gtk_builder_get_object(builder,"circuitarea");
 	gtk_widget_add_events(area,GDK_BUTTON_PRESS_MASK);
 	g_signal_connect(G_OBJECT(area),"button-press-event",G_CALLBACK(press_callback),NULL);

@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
+#include <GL/freeglut.h>
 
 #include "UI.h"
 #include "Circuit.h"
-
+#include "Viewer.h"
 
 /*gsl_vector * solve(gsl_matrix* A,gsl_vector* b)
 {
@@ -30,12 +31,22 @@
 int main(int argc,char** argv)
 {
 	GtkWidget *window;
+
+	gdk_threads_init();
+
 	gtk_init(&argc,&argv);
 /*	window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	g_signal_connect(window,"destroy",G_CALLBACK(gtk_main_quit),NULL);
 	gtk_widget_show(window);*/
+//	glutInit(&argc,argv);
+//	g_thread_new("Viewer",init_Viewer,NULL);
+	gdk_threads_enter();
+	glutInit(&argc,argv);
+	g_thread_new("Viewer",init_Viewer,NULL);
+	printf("THREAD INIT\n");
 	init_UI();
 	gtk_main();
+	gdk_threads_leave();
 	/*printf("ITS... ALIVE!!!\n");
 	int i;
 	gsl_vector * v=gsl_vector_alloc(3);
