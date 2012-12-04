@@ -55,9 +55,14 @@ z2=grid.map.vertices[i].voltage*mult;
 iB=i;
 	}
 	}
+float fx,tx,fy,ty;
 float ang=atan2(y2-y1,x2-x1);
 	float sca=size*cos(ang);
 	float ssa=size*sin(ang);
+fx=x1+sca;
+fy=y1+ssa;
+tx=x2-sca;
+ty=y2-ssa;
 	glBegin(GL_QUADS);
 glNormal3f(sin(ang),-cos(ang),0);
 glVertex3f(x1+sca+ssa,y1+ssa-sca,0);
@@ -75,5 +80,8 @@ glVertex3f(x1+sca-ssa,y1+ssa+sca,z1);
 glVertex3f(x2-sca-ssa,y2-ssa+sca,z2);
 glVertex3f(x2-sca+ssa,y2-ssa-sca,z2);
 	glEnd();
-	
+	glPushMatrix();
+	glTranslatef((fx+tx)/2,(y1+y2)/2,(z1+z2)/2+size*2);
+	glutSolidSphere(size,16,8);
+	glPopMatrix();
 }
