@@ -9,6 +9,8 @@ static float mouseY=0;
 static float pitch=-45;
 static float yaw=-135;
 
+
+static float current_time=0;
 void resizeFunc(int w,int h)
 {
 	if(w==0){
@@ -37,7 +39,7 @@ yaw+=x-mouseX;
 pitch+=y-mouseY;
 	mouseX=x;	
 mouseY=y;
-	displayFunc();
+//	displayFunc();
 }
 void mouseFunc(int button,int state,int x,int y)
 {
@@ -58,7 +60,7 @@ void displayFunc()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	float r=2/sqrt(grid.width*grid.width+grid.height*grid.height);
-	glClearColor(1.0,1.0,1.0,1.0);
+	glClearColor(1.0,1.0,.5,1.0);
 	glNormal3f(0,0,1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glColor3f(0,0,0);
@@ -74,14 +76,15 @@ glColor3f(0.0,1.0,0.0);
 	glScalef(r*50,r*50,r*50);
 	glTranslatef(-(float)grid.width/2,-(float)grid.height/2,0);
 	//glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-	glColor3f(1,1,1);
+	glColor3f(1,1,.5);
 	glBegin(GL_QUADS);
-		glVertex3f(0,0,0);
-		glVertex3f(0,grid.height,0);
-		glVertex3f(grid.width,grid.height,0);
-		glVertex3f(grid.width,0,0);glEnd();
+		glVertex3f(0,0,-.1);
+		glVertex3f(0,grid.height,-.1);
+		glVertex3f(grid.width,grid.height,-.1);
+		glVertex3f(grid.width,0,-.1);glEnd();
 		int i,j;
 		float size=.1;
+glColor3f(1,1,1);
 		for(i=0;i<grid.width+1;i++){
 			for(j=0;j<grid.height+1;j++){renderVertex(i+j*(grid.width+1),size,.1);
 				/*float height=grid.map.vertices[i+j*(grid.width+1)].voltage*5;
@@ -112,7 +115,7 @@ glColor3f(0.0,1.0,0.0);
 				glVertex3f(i-size,j-size,0);*/
 			}
 		}
-		for(i=0;i<grid.map.ccount;i++){renderComponent(i,size,.1);/*
+		for(i=0;i<grid.map.ccount;i++){renderComponent(i,size,.1,current_time);/*
 			Component* c=grid.map.components+i;
 			int x1=c->A%(grid.width+1);
 			int y1=c->A/(grid.width+1);
@@ -129,6 +132,12 @@ glColor3f(0.0,1.0,0.0);
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glutSwapBuffers();
+}
+void timerFunc(int value)
+{
+	displayFunc();
+	current_time+=.01;
+	glutTimerFunc(30,timerFunc,value+1);
 }
 void init_Viewer(gpointer* data)
 {
@@ -150,6 +159,7 @@ glutCreateWindow("VIEWER");
 	glutReshapeFunc(resizeFunc);
 	glutMotionFunc(motionFunc);
 	glutMouseFunc(mouseFunc);
+	glutTimerFunc(100,timerFunc,0);
 	GLuint v=glCreateShader(GL_VERTEX_SHADER);
 	GLuint f=glCreateShader(GL_FRAGMENT_SHADER);
 	const char* textV="varying vec3 normal;\nvoid main(){normal= gl_Normal;gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;gl_FrontColor=gl_Color;}";
