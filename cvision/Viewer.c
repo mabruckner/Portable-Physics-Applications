@@ -2,7 +2,8 @@
 #include "UIFunc.h"
 #include <GL/glew.h>
 #include <GL/freeglut.h>
-#include "Render.c"
+#include "Render.h"
+#include <math.h>
 
 static float mouseX=0;
 static float mouseY=0;
@@ -153,7 +154,7 @@ glutCreateWindow("VIEWER");
 	glEnable(GL_DEPTH_TEST);
 	GLenum err=glewInit();
 	if(err!=GLEW_OK){
-		return 0;
+		return;
 	}
 	glutDisplayFunc(displayFunc);
 	glutReshapeFunc(resizeFunc);

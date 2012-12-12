@@ -1,5 +1,5 @@
-
-#include "UIFunc.h"
+#include "Render.h"
+#include <math.h>
 #include <GL/freeglut.h>
 
 void renderVertex(int index,float size,float mult)
@@ -39,31 +39,32 @@ glEnd();
 void renderComponent(int index,float size,float mult,float time)
 {
 	Component* c=grid.map.components+index;
-	int iA,iB,i;
+	//int iA,iB,
+	int i;
 	float x1,y1,z1,x2,y2,z2,dist;
 	for(i=0;i<grid.map.vcount;i++){
 		if(grid.map.vertices[i].id==c->A){
 	y1=i/(grid.width+1);
 	x1=i%(grid.width+1);
 z1=grid.map.vertices[i].voltage*mult;
-iA=i;
+//iA=i;
 	}
 		if(grid.map.vertices[i].id==c->B){
 	y2=i/(grid.width+1);
 	x2=i%(grid.width+1);
 z2=grid.map.vertices[i].voltage*mult;
-iB=i;
+//iB=i;
 	}
 	}
 dist=sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
-float fx,tx,fy,ty;//,d;
+//float fx,tx,fy,ty;//,d;
 float ang=atan2(y2-y1,x2-x1);
 	float sca=size*cos(ang);
 	float ssa=size*sin(ang);
-fx=x1+sca;
+/*fx=x1+sca;
 fy=y1+ssa;
 tx=x2-sca;
-ty=y2-ssa;
+ty=y2-ssa;*/
 //d=sqrt((fx-tx)*(fx-tx)+(fy-ty)*(fy-ty));
 	glBegin(GL_QUADS);
 glNormal3f(sin(ang),-cos(ang),0);
@@ -88,7 +89,7 @@ float pos=-c->current*time;
 while(pos>=spacing)pos-=spacing;
 while(pos<0)pos+=spacing;
 //float spacing=.5;
-float density=abs(c->current);
+//float density=abs(c->current);
 glEnd();
 if(c->type==RESISTOR){
 glBegin(GL_QUADS);
