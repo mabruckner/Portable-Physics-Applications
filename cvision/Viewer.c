@@ -177,7 +177,7 @@ glutCreateWindow("VIEWER");
 /*	glutMainLoop();*/
 int i;
 	for(i=0;i<10000;i++){
-		printf("%i\n",(int)sqrt(i));
+		printf("%i",(int)sqrt(i));
 	}
 glutMainLoop();
 }

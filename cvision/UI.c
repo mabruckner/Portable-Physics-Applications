@@ -8,7 +8,7 @@
 #include "UI.h"
 
 
-static cairo_surface_t *surface;
+//static cairo_surface_t *surface;
 double mouseX;
 double mouseY;
 
@@ -186,6 +186,7 @@ void calculate()
 	Circuit C;
 	C.vertices=calloc(grid.map.ccount*2,sizeof(Vertex));
 	if(C.vertices==NULL){
+		printf("unable to allocate memory (calculate())\n");
 		//ERROR, HANDLE HERE
 		return;
 	}
@@ -359,16 +360,14 @@ static gboolean press_callback(GtkWidget* widget,GdkEventButton* event,gpointer 
 	gtk_widget_queue_draw_area(widget,0,0,width,height);
 	return TRUE;
 }
-static void reset_grid()
+//IMPLEMENT
+/*static void reset_grid()
 {
-}
-static void init_buttons()
+}*/
+void toggle_callback(GtkToggleToolButton* w,gpointer data)
 {
-
-}
-void toggle_callback(GtkToggleToolButton* widget,gpointer data)
-{
-	if(gtk_toggle_tool_button_get_active(widget)==FALSE)return FALSE;
+	if(gtk_toggle_tool_button_get_active(w)==FALSE)return;
+	GObject* widget=(GObject*)w;
 	if(widget==gtk_builder_get_object(builder,"wirebutton"))draw_state=PLACE_WIRE;
 	if(widget==gtk_builder_get_object(builder,"resistorbutton"))draw_state=PLACE_RESISTOR;
 	if(widget==gtk_builder_get_object(builder,"batterybutton"))draw_state=PLACE_BATTERY;
@@ -395,17 +394,17 @@ printf("began\n");
 	g_signal_connect(window,"destroy",G_CALLBACK(gtk_main_quit),NULL);
 
 
-	GtkWidget* button=gtk_builder_get_object(builder,"wirebutton");
-	g_signal_connect(button,"toggled",toggle_callback,NULL);
-	button=gtk_builder_get_object(builder,"resistorbutton");
-	g_signal_connect(button,"toggled",toggle_callback,NULL);
-	button=gtk_builder_get_object(builder,"batterybutton");
-	g_signal_connect(button,"toggled",toggle_callback,NULL);
-	button=gtk_builder_get_object(builder,"deletebutton");
-	g_signal_connect(button,"toggled",toggle_callback,NULL);
-	button=gtk_builder_get_object(builder,"editbutton");
-	g_signal_connect(button,"toggled",toggle_callback,NULL);
-	button=gtk_builder_get_object(builder,"calculate");
-	g_signal_connect(button,"clicked",calc_callback,NULL);
+	GtkWidget* button=(GtkWidget*)gtk_builder_get_object(builder,"wirebutton");
+	g_signal_connect(button,"toggled",G_CALLBACK(toggle_callback),NULL);
+	button=(GtkWidget*)gtk_builder_get_object(builder,"resistorbutton");
+	g_signal_connect(button,"toggled",G_CALLBACK(toggle_callback),NULL);
+	button=(GtkWidget*)gtk_builder_get_object(builder,"batterybutton");
+	g_signal_connect(button,"toggled",G_CALLBACK(toggle_callback),NULL);
+	button=(GtkWidget*)gtk_builder_get_object(builder,"deletebutton");
+	g_signal_connect(button,"toggled",G_CALLBACK(toggle_callback),NULL);
+	button=(GtkWidget*)gtk_builder_get_object(builder,"editbutton");
+	g_signal_connect(button,"toggled",G_CALLBACK(toggle_callback),NULL);
+	//button=gtk_builder_get_object(builder,"calculate");
+	//g_signal_connect(button,"clicked",G_CALLBACK(calc_callback),NULL);
 	printf("done\n");//gtk_widget_show(window);
 }

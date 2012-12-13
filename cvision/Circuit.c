@@ -12,8 +12,14 @@ void to_matrix(Circuit* c,gsl_matrix** A_ptr,gsl_vector** b_ptr)
 	gsl_vector * b=*b_ptr;
 	if(A==NULL||b==NULL){
 		printf("ERROR, UNABLE TO ALLOCATE MEMORY FOR MATRIX CONVERSION\n");
-		A=NULL;
-		b=NULL;
+		if(A!=NULL){
+			gsl_matrix_free(A);
+			A=NULL;
+		}
+		if(b!=NULL){
+			gsl_vector_free(b);
+			b=NULL;
+		}
 		return;
 	}
 	int i;
@@ -97,6 +103,24 @@ int update_circuit(Circuit* c)
 	gsl_matrix* A;
 	gsl_vector* b;
 	to_matrix(c,&A,&b);
+	if(A==NULL){
+		return -1;
+	}
+	gsl_permutation * p=gsl_permutation_alloc(b->size);
+	gsl_vector* x =gsl_vector_alloc(b->size);
+	if(p==NULL||x==NULL){
+		printf("unable to allocate memory (update_circuit()), freeing and halting\n");
+		gsl_matrix_free(A);
+		gsl_vector_free(b);
+		if(p!=NULL){
+			gsl_permutation_free(p);
+		}
+		if(x!=NULL){
+			gsl_vector_free(x);
+		}
+		return -1;
+	}
+		
 	int i,j;
 	for(i=0;i<A->size1;i++){
 		printf("[ ");
@@ -106,20 +130,19 @@ int update_circuit(Circuit* c)
 		}
 		printf("] [ %6.3g ]\n",gsl_vector_get(b,i));
 	}
-	gsl_permutation * p=gsl_permutation_alloc(b->size);
 	int s;
 	gsl_linalg_LU_decomp(A,p,&s);
 	double det=gsl_linalg_LU_det(A,s);
 	printf("\ndeterminant is %g\n",det);
 	if(det==0.0){
 		printf("ERROR, NON-TRIVIAL SOLUTION\nFREEING MEMORY AND HALTING COMPUTATION\n...");
+		gsl_vector_free(x);
 		gsl_vector_free(b);
 		gsl_matrix_free(A);
 		gsl_permutation_free(p);
 		printf("DONE\n");
 		return -1;
 	}
-	gsl_vector* x =gsl_vector_alloc(b->size);
 	gsl_linalg_LU_solve(A,p,b,x);
 	printf("\nthe solution is:\n");
 	print_vector(x);

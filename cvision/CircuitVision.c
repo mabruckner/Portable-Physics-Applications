@@ -30,7 +30,7 @@
 
 int main(int argc,char** argv)
 {
-	GtkWidget *window;
+	//GtkWidget *window;
 
 	gdk_threads_init();
 
@@ -42,7 +42,7 @@ int main(int argc,char** argv)
 //	g_thread_new("Viewer",init_Viewer,NULL);
 	gdk_threads_enter();
 	glutInit(&argc,argv);
-	g_thread_new("Viewer",init_Viewer,NULL);
+	g_thread_new("Viewer",(gpointer)init_Viewer,NULL);
 	printf("THREAD INIT\n");
 	init_UI();
 	gtk_main();
@@ -83,7 +83,7 @@ int main(int argc,char** argv)
 		gsl_vector_fprintf(stdout,x,"%g");
 	}
 	gsl_permutation_free(p);*/
-	double data[]={5,10};
+/*	double data[]={5,10};
 	Component com[4];
 	Vertex vert[4];
 	vert[0].id=0;
@@ -110,6 +110,6 @@ int main(int argc,char** argv)
 	c.ccount=4;
 	c.vertices=vert;
 	c.vcount=4;
-	update_circuit(&c);
+	update_circuit(&c);*/
 	return 0;
 }
