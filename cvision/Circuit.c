@@ -35,7 +35,7 @@ void to_matrix(Circuit* c,gsl_matrix** A_ptr,gsl_vector** b_ptr)
 				gsl_matrix_set(A,j,i,1.0);
 			}
 		}
-	}//printf("LKJHDSLFKJSHD\n");
+	}
 	gsl_matrix_view voltage_view=gsl_matrix_submatrix(A,c->vcount-1,c->ccount,c->ccount,c->vcount);
 	gsl_matrix* voltage=&voltage_view.matrix;
 	for(i=0;i<c->ccount;i++){
@@ -51,7 +51,7 @@ void to_matrix(Circuit* c,gsl_matrix** A_ptr,gsl_vector** b_ptr)
 		{
 			gsl_vector_set(b,c->vcount+i-1,*(double *)c->components[i].data);
 		}
-	}//printf("KHLKSJDHFHGLKJ\n");
+	}
 	gsl_matrix_set(A,w-1,w-1,1);
 	print_matrix(voltage);
 	print_vector(b);
