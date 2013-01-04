@@ -7,6 +7,8 @@
 #include "UIFunc.h"
 #include "UI.h"
 
+#define VOLTAGES 1
+#define	CURRENTS 2
 
 //static cairo_surface_t *surface;
 double mouseX;
@@ -14,28 +16,32 @@ double mouseY;
 
 static double gutter=20;
 
+static int draw_flags=0;
+
 void draw_component(cairo_t *cr,PangoContext* pc,double unit,double x1,double y1,double x2,double y2,Component* com)
 {
 	PangoLayout* pn=pango_layout_new(pc);
 	char buffer[20];
-	sprintf(buffer,"%.3gA",com->current);
-	cairo_move_to(cr,(x1+x2)/2,(y1+y2)/2);
-	pango_layout_set_text(pn,buffer,-1);
-	cairo_save(cr);
-	cairo_translate(cr,(x1+x2)/2,(y1+y2)/2);
 	double ang=atan2(y2-y1,x2-x1);
 	if((ang>90&&ang<270)){
 		ang-=180;
 	}
 	int w=0;
 	int h=0;
-	pango_layout_get_pixel_size(pn,&w,&h);
-	cairo_rotate(cr,ang);
-	cairo_move_to(cr,-w/2,10);
-	pango_cairo_update_layout(cr,pn);
-	pango_cairo_show_layout(cr,pn);
+	if(draw_flags&CURRENTS){
+		sprintf(buffer,"%.3gA",com->current);
+		cairo_move_to(cr,(x1+x2)/2,(y1+y2)/2);
+		pango_layout_set_text(pn,buffer,-1);
+		cairo_save(cr);
+		cairo_translate(cr,(x1+x2)/2,(y1+y2)/2);
+		pango_layout_get_pixel_size(pn,&w,&h);
+		cairo_rotate(cr,ang);
+		cairo_move_to(cr,-w/2,10);
+		pango_cairo_update_layout(cr,pn);
+		pango_cairo_show_layout(cr,pn);
 	
-	cairo_restore(cr);
+		cairo_restore(cr);
+	}
 	if(com->type==WIRE)
 	{
 		cairo_move_to(cr,x1,y1);
@@ -153,19 +159,27 @@ static gboolean draw_callback(GtkWidget *widget,cairo_t *cr,gpointer data)
 	{
 		for(j=0;j<=grid.height;j++)
 		{
-			sprintf(buffer,"%gV",grid.map.vertices[i+j*(grid.width+1)].voltage);
-			pango_layout_set_text(pn,buffer,-1);
-			int w,h;
-			pango_layout_get_pixel_size(pn,&w,&h);
-			cairo_arc(cr,i*spacing,j*spacing,w/2,0,2*G_PI);
-			cairo_set_source_rgb(cr,1.0,1.0,1.0);
-			cairo_fill_preserve(cr);
-			cairo_set_source_rgb(cr,0.0,0.0,0.0);
-			cairo_stroke(cr);
-			cairo_move_to(cr,i*spacing-w/2,j*spacing-h/2);
-			pango_cairo_update_layout(cr,pn);
-			pango_cairo_show_layout(cr,pn);
-			cairo_new_path(cr);
+			if(draw_flags&VOLTAGES){
+				sprintf(buffer,"%gV",grid.map.vertices[i+j*(grid.width+1)].voltage);
+				pango_layout_set_text(pn,buffer,-1);
+				int w,h;
+				pango_layout_get_pixel_size(pn,&w,&h);
+				cairo_arc(cr,i*spacing,j*spacing,w/2,0,2*G_PI);
+				cairo_set_source_rgb(cr,1.0,1.0,1.0);
+				cairo_fill_preserve(cr);
+				cairo_set_source_rgb(cr,0.0,0.0,0.0);
+				cairo_stroke(cr);
+				cairo_move_to(cr,i*spacing-w/2,j*spacing-h/2);
+				pango_cairo_update_layout(cr,pn);
+				pango_cairo_show_layout(cr,pn);
+				cairo_new_path(cr);
+			}else{
+				cairo_arc(cr,i*spacing,j*spacing,2,0,2*G_PI);
+				cairo_set_source_rgb(cr,1.0,1.0,1.0);
+				cairo_fill_preserve(cr);
+				cairo_set_source_rgb(cr,0.0,0.0,0.0);
+				cairo_stroke(cr);
+			}
 		}
 	}
 	//pango_cairo_show_layout(cr,pn);
