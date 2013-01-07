@@ -70,13 +70,13 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="imagemenuit12341">
+                      <object class="GtkCheckMenuItem" id="VoltageToggle">
                         <property name="label">Voltages</property>
                         <property name="visible">True</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="imagemenui12341234t">
+                      <object class="GtkCheckMenuItem" id="CurrentToggle">
                         <property name="label">Currents</property>
                         <property name="visible">True</property>
                       </object>

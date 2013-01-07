@@ -371,7 +371,8 @@ static gboolean press_callback(GtkWidget* widget,GdkEventButton* event,gpointer 
 		}
 	}
 	calculate();
-	gtk_widget_queue_draw_area(widget,0,0,width,height);
+	//gtk_widget_queue_draw_area(widget,0,0,width,height);
+	gtk_widget_queue_draw(widget);
 	return TRUE;
 }
 //IMPLEMENT
@@ -391,6 +392,18 @@ void toggle_callback(GtkToggleToolButton* w,gpointer data)
 void calc_callback(GtkToolButton* widget,gpointer data)
 {
 	calculate();
+}
+void voltage_toggle_callback(GtkCheckMenuItem* widget,gpointer data)
+{
+	gboolean active=gtk_check_menu_item_get_active(widget);
+	draw_flags=active ? VOLTAGES | draw_flags : (~VOLTAGES) & draw_flags;
+	gtk_widget_queue_draw((GtkWidget*)gtk_builder_get_object(builder,"circuitarea"));
+}
+void current_toggle_callback(GtkCheckMenuItem* widget,gpointer data)
+{
+	gboolean active=gtk_check_menu_item_get_active(widget);
+	draw_flags=active ? CURRENTS | draw_flags : (~CURRENTS) & draw_flags;
+	gtk_widget_queue_draw((GtkWidget*)gtk_builder_get_object(builder,"circuitarea"));
 }
 void init_UI()
 {
@@ -418,6 +431,10 @@ printf("began\n");
 	g_signal_connect(button,"toggled",G_CALLBACK(toggle_callback),NULL);
 	button=(GtkWidget*)gtk_builder_get_object(builder,"editbutton");
 	g_signal_connect(button,"toggled",G_CALLBACK(toggle_callback),NULL);
+	button=(GtkWidget*)gtk_builder_get_object(builder,"VoltageToggle");
+	g_signal_connect(button,"toggled",G_CALLBACK(voltage_toggle_callback),NULL);
+	button=(GtkWidget*)gtk_builder_get_object(builder,"CurrentToggle");
+	g_signal_connect(button,"toggled",G_CALLBACK(current_toggle_callback),NULL);
 	//button=gtk_builder_get_object(builder,"calculate");
 	//g_signal_connect(button,"clicked",G_CALLBACK(calc_callback),NULL);
 	printf("done\n");//gtk_widget_show(window);
