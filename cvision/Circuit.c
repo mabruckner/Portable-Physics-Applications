@@ -134,7 +134,7 @@ int update_circuit(Circuit* c)
 	gsl_linalg_LU_decomp(A,p,&s);
 	double det=gsl_linalg_LU_det(A,s);
 	printf("\ndeterminant is %g\n",det);
-	if(det==0.0){
+	if(det==0.0||(det<0x1p-16&&det>-0x1p-16)){
 		printf("ERROR, NON-TRIVIAL SOLUTION\nFREEING MEMORY AND HALTING COMPUTATION\n...");
 		gsl_vector_free(x);
 		gsl_vector_free(b);

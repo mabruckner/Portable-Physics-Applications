@@ -160,7 +160,20 @@ static gboolean draw_callback(GtkWidget *widget,cairo_t *cr,gpointer data)
 		for(j=0;j<=grid.height;j++)
 		{
 			if(draw_flags&VOLTAGES){
-				sprintf(buffer,"%gV",grid.map.vertices[i+j*(grid.width+1)].voltage);
+				sprintf(buffer,"%.2fV",grid.map.vertices[i+j*(grid.width+1)].voltage);
+				pango_layout_set_text(pn,buffer,-1);
+				int w,h;
+				pango_layout_get_pixel_size(pn,&w,&h);
+				cairo_arc(cr,i*spacing,j*spacing,25,0,2*G_PI);
+				cairo_set_source_rgb(cr,1.0,1.0,1.0);
+				cairo_fill_preserve(cr);
+				cairo_set_source_rgb(cr,0.0,0.0,0.0);
+				cairo_stroke(cr);
+				cairo_move_to(cr,i*spacing-w/2,j*spacing-h/2);
+				pango_cairo_update_layout(cr,pn);
+				pango_cairo_show_layout(cr,pn);
+				cairo_new_path(cr);
+/*				sprintf(buffer,"%gV",grid.map.vertices[i+j*(grid.width+1)].voltage);
 				pango_layout_set_text(pn,buffer,-1);
 				int w,h;
 				pango_layout_get_pixel_size(pn,&w,&h);
@@ -172,7 +185,7 @@ static gboolean draw_callback(GtkWidget *widget,cairo_t *cr,gpointer data)
 				cairo_move_to(cr,i*spacing-w/2,j*spacing-h/2);
 				pango_cairo_update_layout(cr,pn);
 				pango_cairo_show_layout(cr,pn);
-				cairo_new_path(cr);
+				cairo_new_path(cr);*/
 			}else{
 				cairo_arc(cr,i*spacing,j*spacing,2,0,2*G_PI);
 				cairo_set_source_rgb(cr,1.0,1.0,1.0);
