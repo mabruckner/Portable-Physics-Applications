@@ -19,11 +19,13 @@ void advance(TrackData* track,float* x,float* vel,float in,float g)
 		float et=in-time;
 		float test=(-*vel-(float)sqrt((double)((*vel)*(*vel)-2*va*(*x-sum+track->widths[current]))))/va;
 		et=test<et&&test>0 ? test : et;
-		test=(-*vel+(float)sqrt((double)((*vel)*(*vel)-2*va*(*x-sum+track->widths[current]))))/va;
+		//test=(-*vel+(float)sqrt((double)((*vel)*(*vel)-2*va*(*x-sum+track->widths[current]))))/va;
+		test=-2*(*x-sum+track->widths[current])/(*vel+(float)sqrt((double)((*vel)*(*vel)-2*va*(*x-sum+track->widths[current]))));
 		et=test<et&&test>0 ? test : et;
 		test=(-*vel-(float)sqrt((double)((*vel)*(*vel)-2*va*(*x-sum))))/va;
 		et=test<et&&test>0 ? test : et;
-		test=(-*vel+(float)sqrt((double)((*vel)*(*vel)-2*va*(*x-sum))))/va;
+		//test=(-*vel+(float)sqrt((double)((*vel)*(*vel)-2*va*(*x-sum))))/va;
+		test=-2*(*x-sum)/(*vel+(float)sqrt((double)((*vel)*(*vel)-2*va*(*x-sum))));
 		et=test<et&&test>0 ? test : et;
 		*x+=.5*va*et*et+(*vel)*et;
 		*vel+=va*et;

@@ -13,7 +13,6 @@
 <child>
 <object id="menubar" class="GtkMenuBar">
 <property name="visible">True</property>
-
 <child>
 <object class="GtkMenuItem" id="filemenu">
 <property name="visible">True</property>
