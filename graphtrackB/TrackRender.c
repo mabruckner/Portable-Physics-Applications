@@ -30,10 +30,10 @@ void drawHandler(GtkWidget *widget,cairo_t *cr,gpointer data)
 	float height=0;
 	for(i=0;i<track->num-1;i++)width+=track->widths[i];
 	for(i=0;i<track->num;i++)height=track->heights[i]>height ? track->heights[i] : height;
-	printf("%g,%g\n",width,height);
+	//printf("%g,%g\n",width,height);
 	float wf=gtk_widget_get_allocated_width(widget)/width;
 	float hf=gtk_widget_get_allocated_height(widget)/height;
-	printf("%g,%g\n",wf,hf);
+	//printf("%g,%g\n",wf,hf);
 	float sum=0.0;
 	float w=gtk_widget_get_allocated_width(widget);
 	float h=gtk_widget_get_allocated_height(widget);
@@ -47,7 +47,7 @@ void drawHandler(GtkWidget *widget,cairo_t *cr,gpointer data)
 	sum=0;
 	for(i=0;sum<=pos;i++){sum+=track->widths[i];/*printf("%i\n",i);*/}
 	i--;sum-=track->widths[i];printf("%i,",i);
-	printf("%g,%g\n",pos,h-hf*(track->heights[i]*(pos-sum)+track->heights[i+1]*(track->widths[i]-(pos-sum)))/track->widths[i]);
+	//printf("%g,%g\n",pos,h-hf*(track->heights[i]*(pos-sum)+track->heights[i+1]*(track->widths[i]-(pos-sum)))/track->widths[i]);
 	gtk_render_arrow(context,cr,0.0,pos*wf-10,h-hf*(track->heights[i+1]*(pos-sum)+track->heights[i]*(track->widths[i]-(pos-sum)))/track->widths[i],20);
 
 	gtk_render_arrow(context,cr,0.0,pos*wf-10,100,20);

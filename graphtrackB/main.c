@@ -4,7 +4,7 @@
 #include "TrackLogic.h"
 #include "TrackRender.h"
 	TrackData t;
-	float x=9;
+	float x=1;
 	float v=0;
 void draw(GtkWidget *widget,cairo_t *cr,gpointer data)
 {
