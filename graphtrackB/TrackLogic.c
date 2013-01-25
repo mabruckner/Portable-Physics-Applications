@@ -24,8 +24,11 @@ void advance(TrackData* track,float* x,float* vel,float in,float g)
 			}
 			if(*vel==0.0)return;
 			if(*vel<0.0){//ERRORS BE HERE
-				*vel*=sqrt(track->widths[current]*track->widths[current]+(track->heights[current]-track->heights[current+1])*(track->heights[current]-track->heights[current+1]))*track->widths[current]/(sqrt(track->widths[current+1]*track->widths[current+1]+(track->heights[current+1]-track->heights[current+2])*(track->heights[current+1]-track->heights[current+2]))*track->widths[current+1]);
-				printf("\t%g\n",sqrt(track->widths[current]*track->widths[current]+(track->heights[current]-track->heights[current+1])*(track->heights[current]-track->heights[current+1]))*track->widths[current]/(sqrt(track->widths[current+1]*track->widths[current+1]+(track->heights[current+1]-track->heights[current+2])*(track->heights[current+1]-track->heights[current+2]))*track->widths[current+1]));
+				float l1=sqrt(track->widths[current+1]*track->widths[current+1]+(track->heights[current+1]-track->heights[current+2])*(track->heights[current+1]-track->heights[current+2]));
+				float l2=sqrt(track->widths[current]*track->widths[current]+(track->heights[current+1]-track->heights[current])*(track->heights[current+1]-track->heights[current]));
+				float num=(l1*track->widths[current])/(l2*track->widths[current+1]);
+				*vel*=num;
+				printf("\t%g: %g,%g\n",num,l1,l2);
 			}
 		}
 		//if(sum==*x&&*vel>0.0){current+=1;sum+=track->widths[current];}
@@ -33,17 +36,35 @@ void advance(TrackData* track,float* x,float* vel,float in,float g)
 		float dh=track->heights[current+1]-track->heights[current];
 		float va=(track->widths[current]*dh*g)/(track->widths[current]*track->widths[current]+dh*dh);
 		float et=in-time;
+		float np=*x+.5*va*et*et+(*vel)*et;
 		float test=(-*vel-(float)sqrt((double)((*vel)*(*vel)-2*va*(*x-sum+track->widths[current]))))/va;
-		et=test<et&&test>0 ? test : et;
+		if(test<et&&test>0){
+			et=test;
+			np=sum-track->widths[current];
+		}
+		//et=test<et&&test>0 ? test : et;
 		//test=(-*vel+(float)sqrt((double)((*vel)*(*vel)-2*va*(*x-sum+track->widths[current]))))/va;
 		test=-2*(*x-sum+track->widths[current])/(*vel+(float)sqrt((double)((*vel)*(*vel)-2*va*(*x-sum+track->widths[current]))));
-		et=test<et&&test>0 ? test : et;
+		if(test<et&&test>0){
+			et=test;
+			np=sum-track->widths[current];
+		}
+		//et=test<et&&test>0 ? test : et;
 		test=(-*vel-(float)sqrt((double)((*vel)*(*vel)-2*va*(*x-sum))))/va;
-		et=test<et&&test>0 ? test : et;
+		if(test<et&&test>0){
+			et=test;
+			np=sum;
+		}
+		//et=test<et&&test>0 ? test : et;
 		//test=(-*vel+(float)sqrt((double)((*vel)*(*vel)-2*va*(*x-sum))))/va;
 		test=-2*(*x-sum)/(*vel+(float)sqrt((double)((*vel)*(*vel)-2*va*(*x-sum))));
-		et=test<et&&test>0 ? test : et;
-		*x+=.5*va*et*et+(*vel)*et;
+		if(test<et&&test>0){
+			et=test;
+			np=sum;
+		}
+		//et=test<et&&test>0 ? test : et;
+		//*x+=.5*va*et*et+(*vel)*et;
+		*x=np;
 		*vel+=va*et;
 		time+=et;
 	}

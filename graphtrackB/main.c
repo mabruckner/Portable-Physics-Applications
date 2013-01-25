@@ -31,9 +31,9 @@ gboolean timeout(GtkWidget *widget)
 }
 int main(int argc,char** argv)
 {printf("%g\n\n",sqrt(-1));
-	float w[]={10,20,2,4};
-	float h[]={10.0,0.0,10.0,7.0,3.0,10.0};
-	t.num=3;
+	float w[]={2,2,2,2,2,2,2,2,2,2};
+	float h[]={12.5,8.0,4.5,2.0,0.5,0.0,0.5,2.0,4.5,8.0,12.5};
+	t.num=11;
 	t.widths=w;
 	t.heights=h;
 	setTrack(&t);

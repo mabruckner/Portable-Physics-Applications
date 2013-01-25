@@ -19,7 +19,7 @@ void drawHandler(GtkWidget *widget,cairo_t *cr,gpointer data)
 	int i;
 	gtk_render_background(context,cr,0.0,0.0,gtk_widget_get_allocated_width(widget),gtk_widget_get_allocated_height(widget));
 	gtk_render_arrow(context,cr,0.0,50,50,20);
-	gtk_render_line(context,cr,0.0,50,50,20);
+	gtk_render_line(context,cr,0.0,20,200,20);
 
 	if(track==NULL)return;
 
