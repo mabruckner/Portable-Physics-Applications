@@ -55,13 +55,90 @@
 </child>
 
 <child>
-<object id="trackarea" class="GtkDrawingArea">
+<object id="widgetgrid" class="GtkGrid">
 <property name="visible">True</property>
+
+<child>
+<object id="graphtabs" class="GtkNotebook">
+<property name="visible">True</property>
+
+<child>
+<object id="positiongraph" class="GtkDrawingArea">
+<property name="visible">True</property>
+<property name="height-request">200</property>
+<property name="margin">10</property>
+</object>
+<packing>
+<property name="tab-label">position</property>
+</packing>
+</child>
+<child>
+<object id="velocitygraph" class="GtkDrawingArea">
+<property name="visible">True</property>
+<property name="margin">10</property>
+<property name="height-request">200</property>
+</object>
+<packing>
+<property name="tab-label">velocity</property>
+</packing>
+</child>
+<child>
+<object id="accelerationgraph" class="GtkDrawingArea">
+<property name="visible">True</property>
+<property name="margin">10</property>
+<property name="height-request">200</property>
 <signal name="draw" handler="draw_track"/>
 </object>
 <packing>
-<property name="expand">True</property>
+<property name="tab-label">acceleration</property>
 </packing>
+</child>
+
+</object>
+<packing>
+<property name="left-attach">0</property>
+<property name="top-attach">0</property>
+<property name="width">1</property>
+<property name="height">1</property>
+</packing>
+</child>
+
+<!--<child>
+<object id="somebutton" class="GtkButton">
+<property name="visible">True</property>
+<property name="label">random button</property>
+</object>
+<packing>
+<property name="left-attach">0</property>
+<property name="top-attach">1</property>
+<property name="width">2</property>
+<property name="height">1</property>
+</packing>
+</child>-->
+<child>
+<object id ="trackareaframe" class="GtkFrame">
+<property name="visible">True</property>
+<property name="margin">1</property>
+<child>
+<object id="trackarea" class="GtkDrawingArea">
+<property name="margin">10</property>
+<property name="visible">True</property>
+<property name="expand">True</property>
+<property name="height-request">400</property>
+<property name="width-request">400</property>
+<signal name="draw" handler="draw_track"/>
+</object>
+</child>
+</object>
+<packing>
+<property name="left-attach">0</property>
+<property name="top-attach">1</property>
+<property name="width">1</property>
+<property name="height">1</property>
+</packing>
+</child>
+</object>
+
 </child>
 
 <!--<child>

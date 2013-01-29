@@ -21,6 +21,7 @@ void drawHandler(GtkWidget *widget,cairo_t *cr,gpointer data)
 	gtk_render_arrow(context,cr,0.0,50,50,20);
 	gtk_render_line(context,cr,0.0,20,200,20);
 
+
 	if(track==NULL)return;
 
 	float padding=20;
