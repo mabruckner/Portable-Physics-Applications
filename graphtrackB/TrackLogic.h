@@ -7,6 +7,13 @@ typedef struct TrackData
 	float* widths;//num-1 entries
 	float* heights;//num entries
 } TrackData;
-void advance(TrackData* track,float* x,float* vel,float in,float g);
+
+typedef struct MotionData
+{
+	float x;
+	float vel;
+	float g;
+} MotionData;
+void advance(TrackData* track,MotionData* data,float in);
 
 #endif

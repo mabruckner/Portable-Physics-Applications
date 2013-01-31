@@ -3,7 +3,9 @@
 #include <string.h>
 #include "TrackLogic.h"
 #include "TrackRender.h"
+#include "PlotRender.h"
 	TrackData t;
+	MotionData pos;
 	float x=1;
 	float v=0;
 void draw(GtkWidget *widget,cairo_t *cr,gpointer data)
@@ -19,13 +21,16 @@ void connectFunc(GtkBuilder* builder,GObject *object,const gchar *signal_name,co
 		g_signal_connect(object,signal_name,G_CALLBACK(gtk_main_quit),NULL);
 	}else if(strcmp("draw_track",handler_name)==0){
 g_signal_connect(object,signal_name,G_CALLBACK(drawHandler),NULL);
+	}else if(strcmp("draw_pos_graph",handler_name)==0){
+g_signal_connect(object,signal_name,G_CALLBACK(drawHandlerPos),NULL);
+	}else if(strcmp("draw_vel_graph",handler_name)==0){
+g_signal_connect(object,signal_name,G_CALLBACK(drawHandlerVel),NULL);
 	}
 }
 gboolean timeout(GtkWidget *widget)
 {
-	
-		advance(&t,&x,&v,.1,-4);
-		setPos(x);
+		advance(&t,&pos,.1);
+		setPos(pos.x);
 	gtk_widget_queue_draw(widget);
 	return TRUE;
 }
@@ -38,7 +43,12 @@ int main(int argc,char** argv)
 	t.heights=h;
 	setTrack(&t);
 	int i;
-		setPos(x);
+	pos.g=-4;
+	pos.x=1;
+	pos.vel=0;
+	MotionData tmp=pos;
+	setGoalTrack(&t,&pos);
+		setPos(pos.x);
 	/*for(i=0;i<100;i++){
 		advance(&t,&x,&v,1,-4);
 		printf("%i\t%g\t%g\n",i,x,v);

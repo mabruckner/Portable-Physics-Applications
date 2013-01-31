@@ -67,6 +67,7 @@
 <property name="visible">True</property>
 <property name="height-request">200</property>
 <property name="margin">10</property>
+<signal name="draw" handler="draw_pos_graph"/>
 </object>
 <packing>
 <property name="tab-label">position</property>
@@ -77,6 +78,7 @@
 <property name="visible">True</property>
 <property name="margin">10</property>
 <property name="height-request">200</property>
+<signal name="draw" handler="draw_vel_graph"/>
 </object>
 <packing>
 <property name="tab-label">velocity</property>
