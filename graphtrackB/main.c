@@ -25,30 +25,32 @@ g_signal_connect(object,signal_name,G_CALLBACK(drawHandler),NULL);
 g_signal_connect(object,signal_name,G_CALLBACK(drawHandlerPos),NULL);
 	}else if(strcmp("draw_vel_graph",handler_name)==0){
 g_signal_connect(object,signal_name,G_CALLBACK(drawHandlerVel),NULL);
+	}else if(strcmp("draw_acc_graph",handler_name)==0){
+g_signal_connect(object,signal_name,G_CALLBACK(drawHandlerAcc),NULL);
 	}
 }
 gboolean timeout(GtkWidget *widget)
 {
 		advance(&t,&pos,.1);
-		setPos(pos.x);
+		setPos(pos.pos);
 	gtk_widget_queue_draw(widget);
 	return TRUE;
 }
 int main(int argc,char** argv)
 {printf("%g\n\n",sqrt(-1));
-	float w[]={2,2,2,2,2,2,2,2,2,2};
-	float h[]={12.5,8.0,4.5,2.0,0.5,0.0,0.5,2.0,4.5,8.0,12.5};
-	t.num=11;
+	float w[]={2,2,7,2,2,2,2,2,2,2,2};
+	float h[]={12.5,8.0,4.5,2.0,0.5,0.0,0.5,10.0,4.5,8.0,10.25,12.5};
+	t.num=12;
 	t.widths=w;
 	t.heights=h;
 	setTrack(&t);
 	int i;
-	pos.g=-4;
-	pos.x=1;
+	t.g=-8;
+	pos.pos=1;
 	pos.vel=0;
 	MotionData tmp=pos;
 	setGoalTrack(&t,&pos);
-		setPos(pos.x);
+		setPos(pos.pos);
 	/*for(i=0;i<100;i++){
 		advance(&t,&x,&v,1,-4);
 		printf("%i\t%g\t%g\n",i,x,v);

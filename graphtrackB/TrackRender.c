@@ -47,7 +47,7 @@ void drawHandler(GtkWidget *widget,cairo_t *cr,gpointer data)
 	gtk_render_line(context,cr,sum*wf,0.0,sum*wf,track->heights[i]*hf);
 	sum=0;
 	for(i=0;sum<=pos;i++){sum+=track->widths[i];/*printf("%i\n",i);*/}
-	i--;sum-=track->widths[i];printf("%i,",i);
+	i--;sum-=track->widths[i];//printf("%i,",i);
 	//printf("%g,%g\n",pos,h-hf*(track->heights[i]*(pos-sum)+track->heights[i+1]*(track->widths[i]-(pos-sum)))/track->widths[i]);
 	gtk_render_arrow(context,cr,0.0,pos*wf-10,h-hf*(track->heights[i+1]*(pos-sum)+track->heights[i]*(track->widths[i]-(pos-sum)))/track->widths[i],20);
 
