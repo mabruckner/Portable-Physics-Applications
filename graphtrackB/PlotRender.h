@@ -4,7 +4,7 @@
 #include "TrackLogic.h"
 
 void setGoalTrack(TrackData* t,MotionData* init);
-void setActualTrack(TrackData* t);
+void setActualTrack(TrackData* t,MotionData* init);
 void setTime(float t);
 
 void drawHandlerPos(GtkWidget *widget,cairo_t *cr,gpointer data);

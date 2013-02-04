@@ -49,7 +49,9 @@ int main(int argc,char** argv)
 	pos.pos=1;
 	pos.vel=0;
 	MotionData tmp=pos;
+	tmp.pos=3;
 	setGoalTrack(&t,&pos);
+	setActualTrack(&t,&tmp);
 		setPos(pos.pos);
 	/*for(i=0;i<100;i++){
 		advance(&t,&x,&v,1,-4);
