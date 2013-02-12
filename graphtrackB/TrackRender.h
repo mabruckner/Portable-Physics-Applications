@@ -13,6 +13,8 @@
 
 void setTrack(TrackData* t);
 void setPos(float pos);
+gboolean mouseHandler(GtkWidget* widget,GdkEvent * evt,gpointer data);
 void drawHandler(GtkWidget *widget,cairo_t *cr,gpointer data);
+void motionHandler();
 
 #endif

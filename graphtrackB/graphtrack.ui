@@ -31,7 +31,7 @@
   <object class="GtkMenuItem" id="filemenusave">
   <property name="visible">True</property>
   <property name="label">Save</property>
-  <signal name="activate" handler="gtk_main_quit"/>
+  <signal name="activate" handler="save"/>
   </object>
   </child>
   <child>
@@ -129,6 +129,9 @@
 <property name="height-request">400</property>
 <property name="width-request">400</property>
 <signal name="draw" handler="draw_track"/>
+<signal name="motion-notify-event" handler="mousehandler_track"/>
+<signal name="button-press-event" handler="mousehandler_track"/>
+<signal name="button-release-event" handler="mousehandler_track"/>
 </object>
 </child>
 </object>

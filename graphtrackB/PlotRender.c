@@ -8,9 +8,9 @@ MotionData* goalinit;
 TrackData* actualtrack;
 MotionData* actualinit;
 
-//float time;
+int actualnum=0;
 
-int goaldatanum=1001;
+int goaldatanum=501;
 float* goaldata=NULL;
 float* actualdata=NULL;
 
@@ -48,7 +48,8 @@ void setActualTrack(TrackData* t,MotionData* init)
 }
 void setTime(float t)
 {
-
+	int x=t/X_RES;
+	actualnum=x<goaldatanum ? x : goaldatanum;
 }
 static void drawPlot(cairo_t *cr,float x,float y,float width,float hscale,int num,float* data,int skip)
 {
@@ -69,6 +70,10 @@ void drawHandlerPos(GtkWidget *widget,cairo_t *cr,gpointer data)
 	GtkStyleContext* context=gtk_widget_get_style_context(widget);
 	gtk_render_background(context,cr,0.0,0.0,gtk_widget_get_allocated_width(widget),gtk_widget_get_allocated_height(widget));
 	cairo_set_line_cap(cr,CAIRO_LINE_CAP_ROUND);
+	cairo_move_to(cr,0.0,0.0);
+	cairo_line_to(cr,gtk_widget_get_allocated_width(widget),0.0);
+	cairo_set_source_rgb(cr,0.5,0.5,0.5);
+	cairo_stroke(cr);
 	if(goaldata==NULL)return;
 
 	drawPlot(cr,0,0,gtk_widget_get_allocated_width(widget),4.0,goaldatanum,goaldata,3);
@@ -80,7 +85,7 @@ void drawHandlerPos(GtkWidget *widget,cairo_t *cr,gpointer data)
 	cairo_stroke(cr);
 	cairo_restore(cr);
 
-	drawPlot(cr,0,0,gtk_widget_get_allocated_width(widget),4.0,goaldatanum,actualdata,3);
+	drawPlot(cr,0,0,actualnum*gtk_widget_get_allocated_width(widget)/((float)goaldatanum),4.0,actualnum,actualdata,3);
 
 	cairo_set_source_rgb(cr,0.0,0.0,1.0);
 	cairo_stroke(cr);
@@ -90,6 +95,10 @@ void drawHandlerVel(GtkWidget *widget,cairo_t *cr,gpointer data)
 	GtkStyleContext* context=gtk_widget_get_style_context(widget);
 	gtk_render_background(context,cr,0.0,0.0,gtk_widget_get_allocated_width(widget),gtk_widget_get_allocated_height(widget));
 	cairo_set_line_cap(cr,CAIRO_LINE_CAP_ROUND);
+	cairo_move_to(cr,0.0,gtk_widget_get_allocated_height(widget)/2);
+	cairo_line_to(cr,gtk_widget_get_allocated_width(widget),gtk_widget_get_allocated_height(widget)/2);
+	cairo_set_source_rgb(cr,0.5,0.5,0.5);
+	cairo_stroke(cr);
 	if(goaldata==NULL)return;
 	
 
@@ -102,7 +111,7 @@ void drawHandlerVel(GtkWidget *widget,cairo_t *cr,gpointer data)
 	cairo_stroke(cr);
 	cairo_restore(cr);
 
-	drawPlot(cr,0,gtk_widget_get_allocated_height(widget)/2,gtk_widget_get_allocated_width(widget),4.0,goaldatanum,actualdata+1,3);
+	drawPlot(cr,0,gtk_widget_get_allocated_height(widget)/2,actualnum*gtk_widget_get_allocated_width(widget)/((float)goaldatanum),4.0,actualnum,actualdata+1,3);
 
 	cairo_set_source_rgb(cr,0.0,1.0,0.0);
 	cairo_stroke(cr);
@@ -113,6 +122,10 @@ void drawHandlerAcc(GtkWidget *widget,cairo_t *cr,gpointer data)
 	GtkStyleContext* context=gtk_widget_get_style_context(widget);
 	gtk_render_background(context,cr,0.0,0.0,gtk_widget_get_allocated_width(widget),gtk_widget_get_allocated_height(widget));
 	cairo_set_line_cap(cr,CAIRO_LINE_CAP_ROUND);
+	cairo_move_to(cr,0.0,gtk_widget_get_allocated_height(widget)/2);
+	cairo_line_to(cr,gtk_widget_get_allocated_width(widget),gtk_widget_get_allocated_height(widget)/2);
+	cairo_set_source_rgb(cr,0.5,0.5,0.5);
+	cairo_stroke(cr);
 	if(goaldata==NULL)return;
 
 	drawPlot(cr,0,gtk_widget_get_allocated_height(widget)/2,gtk_widget_get_allocated_width(widget),4.0,goaldatanum,goaldata+2,3);
@@ -124,7 +137,7 @@ void drawHandlerAcc(GtkWidget *widget,cairo_t *cr,gpointer data)
 	cairo_stroke(cr);
 	cairo_restore(cr);
 
-	drawPlot(cr,0,gtk_widget_get_allocated_height(widget)/2,gtk_widget_get_allocated_width(widget),4.0,goaldatanum,actualdata+2,3);
+	drawPlot(cr,0,gtk_widget_get_allocated_height(widget)/2,actualnum*gtk_widget_get_allocated_width(widget)/((float)goaldatanum),4.0,actualnum,actualdata+2,3);
 
 	cairo_set_source_rgb(cr,1.0,0.0,0.0);
 	cairo_stroke(cr);

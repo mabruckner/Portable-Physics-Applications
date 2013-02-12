@@ -4,7 +4,8 @@
 #include "TrackLogic.h"
 #include "TrackRender.h"
 #include "PlotRender.h"
-	TrackData t;
+#include "TrackFile.h"
+	TrackData t;float realtime=0.0;
 	MotionData pos;
 	float x=1;
 	float v=0;
@@ -13,6 +14,10 @@ void draw(GtkWidget *widget,cairo_t *cr,gpointer data)
 	GtkStyleContext* context=gtk_widget_get_style_context(widget);
 	gtk_render_frame(context,cr,10,10,gtk_widget_get_allocated_width(widget)-20,gtk_widget_get_allocated_height(widget)-20);printf("Drawing\n");
 	gtk_render_arrow(context,cr,0.0,50,50,20);
+}
+void savefunc(GtkWidget *widget,cairo_t *cr,gpointer data)
+{
+	saveTrack(&t,&pos,"SAVED_FILE.gtrack");
 }
 void connectFunc(GtkBuilder* builder,GObject *object,const gchar *signal_name,const gchar *handler_name,GObject *connect_object,GConnectFlags flags,gpointer user_data)
 {
@@ -27,6 +32,11 @@ g_signal_connect(object,signal_name,G_CALLBACK(drawHandlerPos),NULL);
 g_signal_connect(object,signal_name,G_CALLBACK(drawHandlerVel),NULL);
 	}else if(strcmp("draw_acc_graph",handler_name)==0){
 g_signal_connect(object,signal_name,G_CALLBACK(drawHandlerAcc),NULL);
+	}else if(strcmp("save",handler_name)==0){
+g_signal_connect(object,signal_name,G_CALLBACK(savefunc),NULL);
+	}else if(strcmp("mousehandler_track",handler_name)==0){
+		gtk_widget_add_events(object,GDK_POINTER_MOTION_MASK|GDK_BUTTON_MOTION_MASK|GDK_BUTTON_PRESS_MASK|GDK_BUTTON_RELEASE_MASK);
+		g_signal_connect(object,signal_name,G_CALLBACK(mouseHandler),NULL);
 	}
 }
 gboolean timeout(GtkWidget *widget)
@@ -34,25 +44,28 @@ gboolean timeout(GtkWidget *widget)
 		advance(&t,&pos,.1);
 		setPos(pos.pos);
 	gtk_widget_queue_draw(widget);
+	realtime+=.1;
+	setTime(realtime);
 	return TRUE;
 }
 int main(int argc,char** argv)
 {printf("%g\n\n",sqrt(-1));
-	float w[]={2,2,7,2,2,2,2,2,2,2,2};
-	float h[]={12.5,8.0,4.5,2.0,0.5,0.0,0.5,10.0,4.5,8.0,10.25,12.5};
-	t.num=12;
+	float w[]={2,6,8,4,4,10,2,2,2,2,2};
+	float h[]={20,0,0,2.0,0,0.0,1.0,12.0,4.0,20,10.25,12.5};
+	t.num=10;
 	t.widths=w;
 	t.heights=h;
 	setTrack(&t);
 	int i;
 	t.g=-8;
-	pos.pos=1;
+	pos.pos=.5;
 	pos.vel=0;
 	MotionData tmp=pos;
 	tmp.pos=3;
 	setGoalTrack(&t,&pos);
-	setActualTrack(&t,&tmp);
+	setActualTrack(&t,&pos);
 		setPos(pos.pos);
+	saveTrack(&t,&pos,"TEST.gtrack");
 	/*for(i=0;i<100;i++){
 		advance(&t,&x,&v,1,-4);
 		printf("%i\t%g\t%g\n",i,x,v);
@@ -77,6 +90,7 @@ int main(int argc,char** argv)
 	if(error==NULL)printf("STYLE LOADED!\n");
 	gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),style,GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
+	widget=gtk_builder_get_object(builder,"widgetgrid");
 	g_timeout_add(50,timeout,widget);
 
 	gtk_main();

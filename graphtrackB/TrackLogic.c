@@ -45,35 +45,49 @@ void advance(TrackData* track,MotionData* pos,float in)
 #else
 		float vel=pos->vel*track->widths[current]/sqrt(track->widths[current]*track->widths[current]+dh*dh);
 		float a=(track->g*dh)/sqrt(track->widths[current]*track->widths[current]+dh*dh);
+			//if(va==0)printf("%g,%g\n",va,a);
 #endif
 		float np=pos->pos+.5*va*et*et+(vel)*et;
-		float test=(-vel-(float)sqrt((double)((vel)*(vel)-2*va*(pos->pos-sum+track->widths[current]))))/va;
-		if(test<et&&test>0){
-			et=test;
-			np=sum-track->widths[current];
+		if(va==0.0){
+			float test=(sum-pos->pos)/vel;
+			if(test<et&&test>0){
+				et=test;
+				np=sum;
+			}
+			test=(sum-track->widths[current]-pos->pos)/vel;
+			if(test<et&&test>0){
+				et=test;
+				np=sum-track->widths[current];
+			}
+		}else{
+			float test=(-vel-(float)sqrt((double)((vel)*(vel)-2*va*(pos->pos-sum+track->widths[current]))))/va;
+			if(test<et&&test>0){
+				et=test;
+				np=sum-track->widths[current];
+			}
+			//et=test<et&&test>0 ? test : et;
+			//test=(-*vel+(float)sqrt((double)((*vel)*(*vel)-2*va*(*x-sum+track->widths[current]))))/va;
+			test=-2*(pos->pos-sum+track->widths[current])/(vel+(float)sqrt((double)((vel)*(vel)-2*va*(pos->pos-sum+track->widths[current]))));
+			if(test<et&&test>0){
+				et=test;
+				np=sum-track->widths[current];
+			}
+			//et=test<et&&test>0 ? test : et;
+			test=(-vel-(float)sqrt((double)((vel)*(vel)-2*va*(pos->pos-sum))))/va;
+			if(test<et&&test>0){
+				et=test;
+				np=sum;
+			}
+			//et=test<et&&test>0 ? test : et;
+			//test=(-*vel+(float)sqrt((double)((*vel)*(*vel)-2*va*(*x-sum))))/va;
+			test=-2*(pos->pos-sum)/(vel+(float)sqrt((double)((vel)*(vel)-2*va*(pos->pos-sum))));
+			if(test<et&&test>0){
+				et=test;
+				np=sum;
+			}
+			//et=test<et&&test>0 ? test : et;
+			//*x+=.5*va*et*et+(*vel)*et;
 		}
-		//et=test<et&&test>0 ? test : et;
-		//test=(-*vel+(float)sqrt((double)((*vel)*(*vel)-2*va*(*x-sum+track->widths[current]))))/va;
-		test=-2*(pos->pos-sum+track->widths[current])/(vel+(float)sqrt((double)((vel)*(vel)-2*va*(pos->pos-sum+track->widths[current]))));
-		if(test<et&&test>0){
-			et=test;
-			np=sum-track->widths[current];
-		}
-		//et=test<et&&test>0 ? test : et;
-		test=(-vel-(float)sqrt((double)((vel)*(vel)-2*va*(pos->pos-sum))))/va;
-		if(test<et&&test>0){
-			et=test;
-			np=sum;
-		}
-		//et=test<et&&test>0 ? test : et;
-		//test=(-*vel+(float)sqrt((double)((*vel)*(*vel)-2*va*(*x-sum))))/va;
-		test=-2*(pos->pos-sum)/(vel+(float)sqrt((double)((vel)*(vel)-2*va*(pos->pos-sum))));
-		if(test<et&&test>0){
-			et=test;
-			np=sum;
-		}
-		//et=test<et&&test>0 ? test : et;
-		//*x+=.5*va*et*et+(*vel)*et;
 		pos->pos=np;
 		vel+=va*et;
 #ifndef USE_VEL_MAG
